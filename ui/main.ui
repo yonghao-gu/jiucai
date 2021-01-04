@@ -6,20 +6,82 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>713</width>
-    <height>523</height>
+    <width>973</width>
+    <height>578</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
-  <widget class="QWidget" name="centralwidget"/>
+  <widget class="QWidget" name="centralwidget">
+   <widget class="QTreeWidget" name="memu_tree">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>10</y>
+      <width>131</width>
+      <height>541</height>
+     </rect>
+    </property>
+    <column>
+     <property name="text">
+      <string>目录节点</string>
+     </property>
+    </column>
+    <column>
+     <property name="text">
+      <string/>
+     </property>
+    </column>
+    <item>
+     <property name="text">
+      <string>爬虫</string>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+     <item>
+      <property name="text">
+       <string>基金爬虫</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>指数爬虫</string>
+      </property>
+     </item>
+    </item>
+    <item>
+     <property name="text">
+      <string>数据分析</string>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>数据分析2</string>
+     </property>
+    </item>
+   </widget>
+   <widget class="QWidget" name="widget" native="true">
+    <property name="geometry">
+     <rect>
+      <x>140</x>
+      <y>50</y>
+      <width>821</width>
+      <height>491</height>
+     </rect>
+    </property>
+   </widget>
+  </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>713</width>
+     <width>973</width>
      <height>23</height>
     </rect>
    </property>
