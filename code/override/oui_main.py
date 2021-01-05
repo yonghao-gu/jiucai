@@ -2,8 +2,11 @@
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 
-# from view import Ui_MainWindow
-# from view import Ui_Form
+#from view import Ui_MainWindow
+from view import Ui_fund_view
+
+
+
 class Oui_MainWindow(QtWidgets.QMainWindow):
     def __init__(self, parent = None):
         super().__init__(parent)
@@ -36,30 +39,79 @@ class Oui_MainWindow(QtWidgets.QMainWindow):
 
         child3 = QtWidgets.QTreeWidgetItem(self.memu_tree)
         child3.setText(0, "日志")
-        self.memu_tree.clicked.connect(self.on_memu_tree_click)
-        self.m_x = 140
-        self.m_y = 50
 
-    def on_memu_tree_click(self,indexobj):
-        item = self.memu_tree.currentItem()
-        if item.text(0) == "基金爬虫":
-            self.init_fund_spiker_ui()
-    
+        self.init_fund_spiker_ui()
+        self.init_data_analyse()
+        self.memu_tree.clicked.connect(self.on_memu_tree_click)
+        
     def init_fund_spiker_ui(self):
-        
-        obj = QtWidgets.QWidget(self.centralwidget)
-        obj.resize(300,600)
-        obj.move(self.m_x,self.m_y)
-        self.m_y += 100
-        
+        self.init_fund_ui = QtWidgets.QWidget(self.centralwidget)
+        self.init_fund_ui.resize(300,600)
+        self.init_fund_ui.move(150,200)
         button = QtWidgets.QPushButton()
-        button.setText("看我")
+        button.setText("我是爬虫窗口")
         lable = QtWidgets.QLabel()
         lable.setText("看他")
         layout = QtWidgets.QHBoxLayout()
         layout.addWidget(button)
         layout.addWidget(lable)
-        obj.setLayout(layout)
-        obj.show()
+        self.init_fund_ui.setLayout(layout)
+        self.init_fund_ui.hide()
+        self.init_log_view()
+
+
+    def init_data_analyse(self):
+        self.init_data_ui = QtWidgets.QWidget(self.centralwidget)
+        self.init_data_ui.resize(300,600)
+        self.init_data_ui.move(150,200)
+        button =  QtWidgets.QLabel()
+        button.setText("我是数据分析窗口")
+        lable = QtWidgets.QLabel()
+        lable.setText("看他")
+        layout = QtWidgets.QHBoxLayout()
+        layout.addWidget(button)
+        layout.addWidget(lable)
+        self.init_data_ui.setLayout(layout)
+        self.init_data_ui.hide()
+
+    def init_log_view(self):
+        self.init_log_ui = QtWidgets.QWidget(self.centralwidget)
+        obj = Ui_fund_view()
+        obj.setupUi(self.init_log_ui)
+        #self.init_log_ui.resize(300, 400)
+        self.init_log_ui.move(150,160)
+        # lable = QtWidgets.QLabel()
+        # lable.setText("日志")
+        # layout = QtWidgets.QHBoxLayout()
+        # layout.addWidget(lable)
+        #obj.setupUi(layout)
+        #self.init_log_ui.setLayout(layout)
+        self.init_log_ui.show()
+
+    def hide_all_ui(self):
+        self.init_fund_ui.hide()
+        self.init_data_ui.hide()
+        self.init_log_ui.hide()
+
+    def on_memu_tree_click(self,indexobj):
+        item = self.memu_tree.currentItem()
+        text = item.text(0)
+        self.hide_all_ui()
+        if text == "基金爬虫":
+            self.on_show_fund_spiker_ui()
+        elif text == "数据分析":
+            self.on_show_data_analyse()
+        elif text == "日志":
+            self.on_show_log()
+    
+    def on_show_fund_spiker_ui(self):
+        self.init_fund_ui.show()
+  
+    def on_show_data_analyse(self):
+        self.init_data_ui.show()
+
+    def on_show_log(self):
+        self.init_log_ui.show()
+
 
 
