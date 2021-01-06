@@ -17,9 +17,9 @@
    <property name="geometry">
     <rect>
      <x>0</x>
-     <y>60</y>
+     <y>30</y>
      <width>291</width>
-     <height>381</height>
+     <height>411</height>
     </rect>
    </property>
    <property name="sizePolicy">
@@ -32,8 +32,8 @@
   <widget class="QPushButton" name="pushButton">
    <property name="geometry">
     <rect>
-     <x>10</x>
-     <y>10</y>
+     <x>0</x>
+     <y>0</y>
      <width>75</width>
      <height>23</height>
     </rect>
@@ -45,8 +45,8 @@
   <widget class="QRadioButton" name="radioButton">
    <property name="geometry">
     <rect>
-     <x>120</x>
-     <y>10</y>
+     <x>90</x>
+     <y>0</y>
      <width>89</width>
      <height>16</height>
     </rect>
