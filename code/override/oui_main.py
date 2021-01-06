@@ -1,17 +1,19 @@
 # -*- coding: utf-8 -*-
 
-from PyQt5 import QtCore, QtGui, QtWidgets
+from defines import *
 
+from PyQt5 import QtCore, QtGui, QtWidgets
 #from view import Ui_MainWindow
 from view import Ui_fund_view
-
+from view import Ui_log_view
 
 
 class Oui_MainWindow(QtWidgets.QMainWindow):
     def __init__(self, parent = None):
         super().__init__(parent)
         self.setWindowTitle("韭菜收割机")
-        self.resize(600,700)
+        self.resize(MainWindowWidth,MainWindowHeight)
+        self.setFixedSize(MainWindowWidth,MainWindowHeight)
         self.centralwidget = QtWidgets.QWidget(self)
         self.centralwidget.setObjectName("centralframe")
         self.setCentralWidget(self.centralwidget)
@@ -19,7 +21,7 @@ class Oui_MainWindow(QtWidgets.QMainWindow):
 
 
         self.memu_tree = QtWidgets.QTreeWidget(self.centralwidget)
-        self.memu_tree.setGeometry(QtCore.QRect(0, 10, 131, 541))
+        self.memu_tree.setGeometry(QtCore.QRect(0, 0, Divide, MainWindowHeight))
         self.memu_tree.setObjectName("memu_tree")
         self.memu_tree.setColumnCount(1)
         self.memu_tree.setHeaderLabels(["目录"])
@@ -43,11 +45,12 @@ class Oui_MainWindow(QtWidgets.QMainWindow):
         self.init_fund_spiker_ui()
         self.init_data_analyse()
         self.memu_tree.clicked.connect(self.on_memu_tree_click)
-        
+    
+    
     def init_fund_spiker_ui(self):
         self.init_fund_ui = QtWidgets.QWidget(self.centralwidget)
         self.init_fund_ui.resize(300,600)
-        self.init_fund_ui.move(150,200)
+        self.init_fund_ui.move(Divide,0)
         button = QtWidgets.QPushButton()
         button.setText("我是爬虫窗口")
         lable = QtWidgets.QLabel()
@@ -63,7 +66,7 @@ class Oui_MainWindow(QtWidgets.QMainWindow):
     def init_data_analyse(self):
         self.init_data_ui = QtWidgets.QWidget(self.centralwidget)
         self.init_data_ui.resize(300,600)
-        self.init_data_ui.move(150,200)
+        self.init_data_ui.move(Divide, 0)
         button =  QtWidgets.QLabel()
         button.setText("我是数据分析窗口")
         lable = QtWidgets.QLabel()
@@ -76,8 +79,9 @@ class Oui_MainWindow(QtWidgets.QMainWindow):
 
     def init_log_view(self):
         self.init_log_ui = QtWidgets.QWidget(self.centralwidget)
-        obj = Ui_fund_view()
+        obj = Ui_log_view()
         obj.setupUi(self.init_log_ui)
+        self.init_log_ui.move(Divide, 0)
         #self.init_log_ui.resize(300, 400)
         self.init_log_ui.move(150,160)
         # lable = QtWidgets.QLabel()
