@@ -19,4 +19,6 @@ class CViewLog(QtWidgets.QWidget, CInterface):
     def OnResizeWindow(self, MainWindow):
         self.resize(MainWindow.width()-Divide,MainWindow.height())
         self.ui_obj.textBrowser.resize(self.width(), self.height())
- 
+    
+    def println(self, text):
+        self.ui_obj.textBrowser.append(text)

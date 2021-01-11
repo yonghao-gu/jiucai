@@ -9,6 +9,8 @@ from view import Ui_log_view
 
 from components import CViewMemu, CViewLog
 
+import globals
+
 class Oui_MainWindow(QtWidgets.QMainWindow):
     def __init__(self, parent = None):
         super().__init__(parent)
@@ -64,6 +66,9 @@ class Oui_MainWindow(QtWidgets.QMainWindow):
 
     def init_log_view(self):
         self.init_log_ui = CViewLog(self.centralwidget, self)
+        globals.set_obj("ViewLog", self.init_log_ui)
+
+
 
     def hide_all_ui(self):
         self.init_fund_ui.hide()
