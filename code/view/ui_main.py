@@ -26,7 +26,7 @@ class Ui_MainWindow(object):
         item_0 = QtWidgets.QTreeWidgetItem(self.memu_tree)
         item_0 = QtWidgets.QTreeWidgetItem(self.memu_tree)
         self.widget = QtWidgets.QWidget(self.centralwidget)
-        self.widget.setGeometry(QtCore.QRect(140, 50, 821, 491))
+        self.widget.setGeometry(QtCore.QRect(140, 30, 821, 491))
         self.widget.setObjectName("widget")
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(MainWindow)

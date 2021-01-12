@@ -6,8 +6,8 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 #from view import Ui_MainWindow
 from view import Ui_fund_view
 from view import Ui_log_view
-
-from components import CViewMemu, CViewLog
+from view import Ui_MainWindow
+from components import CViewMenu, CViewLog,CViewMenuBar
 
 import globals
 
@@ -23,14 +23,19 @@ class Oui_MainWindow(QtWidgets.QMainWindow):
         self.setCentralWidget(self.centralwidget)
         self.setWindowIcon(QtGui.QIcon("resource/main_icon.jpg"))
 
-
-        self.memu_tree = CViewMemu(self.centralwidget,self)
+        self.menu = CViewMenuBar(self,self)
+        
+        self.menu_tree = CViewMenu(self.centralwidget,self)
 
 
         self.init_fund_spiker_ui()
         self.init_data_analyse()
         self.init_log_view()
-        self.memu_tree.clicked.connect(self.on_memu_tree_click)
+
+        #注册事件
+        self.menu_tree.clicked.connect(self.on_menu_tree_click)
+        self.menu.triggered.connect(self.on_menu_triggered)
+
     
 
         
@@ -58,10 +63,6 @@ class Oui_MainWindow(QtWidgets.QMainWindow):
         button.setText("我是数据分析窗口")
         lable = QtWidgets.QLabel(self.init_data_ui)
         lable.setText("看他")
-        # layout = QtWidgets.QHBoxLayout()
-        # layout.addWidget(button)
-        # layout.addWidget(lable)
-        # self.init_data_ui.setLayout(layout)
         self.init_data_ui.hide()
 
     def init_log_view(self):
@@ -73,19 +74,26 @@ class Oui_MainWindow(QtWidgets.QMainWindow):
     def hide_all_ui(self):
         self.init_fund_ui.hide()
         self.init_data_ui.hide()
-        self.init_log_ui.hide()
+        #self.init_log_ui.hide()
 
-    def on_memu_tree_click(self,indexobj):
-        item = self.memu_tree.currentItem()
+    ################### 事件处理 ################
+    #侧边目录被点击
+    def on_menu_tree_click(self,indexobj):
+        item = self.menu_tree.currentItem()
         text = item.text(0)
+        print("item:", item.objectName())
         self.hide_all_ui()
         if text == "基金爬虫":
             self.on_show_fund_spiker_ui()
         elif text == "数据分析":
             self.on_show_data_analyse()
-        elif text == "日志":
-            self.on_show_log()
+
     
+    #菜单目录被点击
+    def on_menu_triggered(self, action):
+        print("object:",action.objectName())
+
+
     def on_show_fund_spiker_ui(self):
         self.init_fund_ui.show()
   
@@ -97,7 +105,7 @@ class Oui_MainWindow(QtWidgets.QMainWindow):
 
 
     def resizeEvent(self, event):
-        self.memu_tree.OnResizeWindow(self)
+        self.menu_tree.OnResizeWindow(self)
         self.init_log_ui.OnResizeWindow(self)
 
 

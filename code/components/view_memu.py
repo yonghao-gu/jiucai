@@ -4,8 +4,9 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 
 from .widget import CInterface
 
+import math
 
-class CViewMemu(QtWidgets.QTreeWidget, CInterface):
+class CViewMenu(QtWidgets.QTreeWidget, CInterface):
     def __init__(self, parent, MainWndow):
         super().__init__(parent)
         self.setObjectName("memu_tree")
@@ -29,11 +30,9 @@ class CViewMemu(QtWidgets.QTreeWidget, CInterface):
         child3.setText(0, "日志")
 
 
-
-
-
     def OnResizeWindow(self, MainWindow):
-        self.setGeometry(QtCore.QRect(0, 0, Divide, MainWindow.height()))
+        heigh = math.floor(MainWindow.height() * (100 - LogLow) / 100)
+        self.setGeometry(QtCore.QRect(0, 0, Divide, heigh))
 
 
 
