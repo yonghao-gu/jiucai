@@ -7,9 +7,10 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 from view import Ui_fund_view
 from view import Ui_log_view
 from view import Ui_MainWindow
-from components import CViewMenu, CViewLog,CViewMenuBar
+from components import CViewMenu, CViewLog,CViewMenuBar,CViewTest
 
 import globals
+import log
 
 class Oui_MainWindow(QtWidgets.QMainWindow):
     def __init__(self, parent = None):
@@ -31,6 +32,7 @@ class Oui_MainWindow(QtWidgets.QMainWindow):
         self.init_fund_spiker_ui()
         self.init_data_analyse()
         self.init_log_view()
+        self.init_test_view()
 
         #注册事件
         self.menu_tree.clicked.connect(self.on_menu_tree_click)
@@ -69,26 +71,29 @@ class Oui_MainWindow(QtWidgets.QMainWindow):
         self.init_log_ui = CViewLog(self.centralwidget, self)
         globals.set_obj("ViewLog", self.init_log_ui)
 
-
+    def init_test_view(self):
+        self.init_test_ui = CViewTest(self.centralwidget, self)
 
     def hide_all_ui(self):
         self.init_fund_ui.hide()
         self.init_data_ui.hide()
         #self.init_log_ui.hide()
+        self.init_test_ui.hide()
 
     ################### 事件处理 ################
     #侧边目录被点击
     def on_menu_tree_click(self,indexobj):
         item = self.menu_tree.currentItem()
         text = item.text(0)
-        print("item:", item.objectName())
         self.hide_all_ui()
         if text == "基金爬虫":
             self.on_show_fund_spiker_ui()
         elif text == "数据分析":
             self.on_show_data_analyse()
-
+        elif text == "测试":
+            self.on_show_test()
     
+
     #菜单目录被点击
     def on_menu_triggered(self, action):
         print("object:",action.objectName())
@@ -100,13 +105,14 @@ class Oui_MainWindow(QtWidgets.QMainWindow):
     def on_show_data_analyse(self):
         self.init_data_ui.show()
 
-    def on_show_log(self):
-        self.init_log_ui.show()
 
+    def on_show_test(self):
+        self.init_test_ui.show()
+    
 
     def resizeEvent(self, event):
         self.menu_tree.OnResizeWindow(self)
         self.init_log_ui.OnResizeWindow(self)
-
+        self.init_test_ui.OnResizeWindow(self)
 
 

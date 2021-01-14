@@ -27,7 +27,7 @@ class CViewMenu(QtWidgets.QTreeWidget, CInterface):
         child2.setText(0,"数据分析")
 
         child3 = QtWidgets.QTreeWidgetItem(self)
-        child3.setText(0, "日志")
+        child3.setText(0, "测试")
 
 
     def OnResizeWindow(self, MainWindow):

@@ -13,14 +13,12 @@ import time
 
 def main():
     app = QtWidgets.QApplication(sys.argv)
-
+    globals.set_obj("App", app)
     mainwindow = Oui_MainWindow()
     globals.set_obj("MainWindow", mainwindow)
     #mainW.setWindowIcon(QIcon("./resource/icon.jpg"))
     mainwindow.show()
-    log.Sys("启动成功")
-    # logobj = globals.get_obj("ViewLog")
-    # print(logobj.ui_obj.textBrowser.toPlainText())
+    
     sys.exit(app.exec_())
 
 if __name__ == "__main__":

@@ -18,8 +18,8 @@ def add_message(level, str):
     now = time.strftime("%Y-%m-%d %H:%M:%S",t)
     return "[%s %s]"%(now, level) + str
 
-def colour(level, str):
-    return '''<font size="5" color="%s">%s</fornt>'''%(DEF_LEVEL[level], add_message(level,str))
+def color(level, str):
+    return '''<font size="5" color="%s">%s</fornt>'''%(DEF_LEVEL[level], str)
 
 def log_obj():
     return globals.get_obj("ViewLog")
@@ -27,7 +27,32 @@ def log_obj():
 def write_log(level, *args):
     ls = [ str(i) for i in args]
     s = " ".join(ls)
-    log_obj().println(colour(level, s))
+    #log_obj().println(color(level, s))
+    obj = ClineObj(s, level)
+    log_obj().println(obj)
+
+class ClineObj(object):
+    def __init__(self, s, level):
+        self.m_text = s
+        self.m_level = level
+    
+    def color_text(self, s = None):
+        return color(self.m_level, s or self.m_text)
+    
+    def messae_text(self, s = None):
+        return add_message(self.m_level, s or self.m_text)
+    
+    def text(self):
+        return self.color_text(self.messae_text())
+    
+    def origin(self):
+        return self.m_text
+
+    def __str__(self):
+        return self.text()
+    
+
+
 
 def Log(*args):
     write_log("Log", *args)
