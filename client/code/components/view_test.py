@@ -22,8 +22,7 @@ class CViewTest(QtWidgets.QWidget, CCoreInterface):
     
     def OnPushButton(self, isclicked):
         s = self.ui_obj.lineEdit.text()
-        for i in range(1000):
-            log.Sys(s+str(i))
+        log.Sys(s)
     
 
 

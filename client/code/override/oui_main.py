@@ -36,7 +36,7 @@ class Oui_MainWindow(QtWidgets.QMainWindow):
 
         #注册事件
         self.menu_tree.clicked.connect(self.on_menu_tree_click)
-        self.menu.triggered.connect(self.on_menu_triggered)
+        #self.menu.triggered.connect(self.on_menu_triggered)
 
     
 

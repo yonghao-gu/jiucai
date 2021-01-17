@@ -4,8 +4,10 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 
 from .widget import CInterface
 
-import math
 
+
+import math
+import globals
 _translate = QtCore.QCoreApplication.translate
 
 class CViewMenuBar(QtWidgets.QMenuBar, CInterface):
@@ -30,6 +32,9 @@ class CViewMenuBar(QtWidgets.QMenuBar, CInterface):
 
         MainWindow.setMenuBar(self)
 
+        self.triggered.connect(self.OnActionTrigged)
+
+
     def init_action(self, MainWindow):
         self.action_load_config = QtWidgets.QAction(MainWindow)
         self.action_load_config.setObjectName("action_load_config")
@@ -41,6 +46,21 @@ class CViewMenuBar(QtWidgets.QMenuBar, CInterface):
         self.menu_config.addAction(self.action_load_config)
         self.menu_config.addAction(self.action_modiy_config)
 
+
+
+
+    def OnActionTrigged(self, action):
+        name = action.objectName()
+        func =  getattr(self, "onActionTrigged_"+name, None)
+        if not func :
+            return
+        
+        func()
+
+
+    def onActionTrigged_action_modiy_config(self):
+        config = globals.get_obj("Config")
+        config.show_dialog()
 
 
 

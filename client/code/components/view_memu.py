@@ -4,6 +4,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 
 from .widget import CInterface
 
+
 import math
 
 class CViewMenu(QtWidgets.QTreeWidget, CInterface):

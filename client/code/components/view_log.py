@@ -71,13 +71,10 @@ class CViewLog(QtWidgets.QWidget, CInterface):
         self.move(0,y)
         self.resize(MainWindow.width(),height)
         self.ui_obj.textBrowser.resize(self.width(), self.height()-50)
-        self.ui_obj.line.resize(self.width(), 10)
+       # self.ui_obj.line.resize(self.width(), 10)
     
     def println(self, lineobj):
-        self.ui_obj.textBrowser.moveCursor(self.ui_obj.textBrowser.textCursor().End)
-        if self.cache_obj.writeline(lineobj):
-            self.ui_obj.textBrowser.setText(self.cache_obj.get_text())
-            #self.ui_obj.textBrowser.setTextCursor(self.ui_obj.textBrowser.textCursor().End)
+        self.cache_obj.writeline(lineobj)
+        self.ui_obj.textBrowser.setText(self.cache_obj.get_text())
+        if self.ui_obj.checkBox.isChecked():
             self.ui_obj.textBrowser.moveCursor(self.ui_obj.textBrowser.textCursor().End)
-        else:
-            self.ui_obj.textBrowser.append(str(lineobj))
