@@ -32,6 +32,7 @@ data = %s
     print("data:",type(global_data["data"]))
 
 def main2():
+    #获取基金公司信息
     url = "http://fund.eastmoney.com/pingzhongdata/000001.js"
     headers = {
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:79.0) Gecko/20100101 Firefox/79.0",
@@ -41,14 +42,18 @@ def main2():
         print("result false")
         return
     text = result.text
-    # r = re.findall(r"var(.*?)=(.*?);",text)
-    # for ls in r:
-    #     key = ls[0].replace(" ","")
-    #     val = ls[1].replace(" ","")
-    #     print(key)
+    #获取所有值
+    r = re.findall(r"var(.*?)=(.*?);",text)
+
+    for ls in r:
+        key = ls[0].replace(" ","")
+        val = ls[1].replace(" ","")
+        print(key)
     print("%dKB"%(len(text)/1024))
-
-
+    #获取持仓股票信息
+    #https://push2.eastmoney.com/api/qt/ulist.np/get?cb=jQuery18306482784578776678_1610895737356&fltt=2&invt=2&ut=267f9ad526dbe6b0262ab19316f5a25b&fields=f3,f12,f14&secids=0.002127,0.002013,1.601318,0.002271,0.300142,1.600519,0.000513,0.002475,0.000858,0.002444&_=1610895737461
+    #基本信息
+    #http://fund.eastmoney.com/000001.html
 
 if __name__ == "__main__":
     main2()
