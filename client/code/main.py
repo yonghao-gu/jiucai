@@ -1,6 +1,11 @@
 # -*- coding: utf-8 -*-
 import sys
 
+import os
+
+
+libpath = os.path.abspath("../../lib")
+sys.path.append(libpath)
 
 
 from PyQt5 import QtWidgets, QtGui,QtCore
@@ -25,3 +30,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+    
