@@ -3,8 +3,7 @@
 import requests
 import json
 import re
-import jiphy
-import js2py
+from lxml import etree
 
 def main():
     url = "http://fund.eastmoney.com/js/fundcode_search.js"
@@ -55,6 +54,26 @@ def main2():
     #基本信息
     #http://fund.eastmoney.com/000001.html
 
+def main3():
+    url = "http://fund.eastmoney.com/000001.html"
+    headers = {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:79.0) Gecko/20100101 Firefox/79.0",
+    }
+    result = requests.get(url = url, headers = headers)
+
+    if result.status_code != 200 :
+        print("result false")
+        return
+    result.encoding ="utf-8"
+    text = result.text
+    tree = etree.HTML(text)
+    ls = tree.xpath('//div[@class="bd"]')[2].xpath("./ul//tr")[1:]
+
+    for v in ls:
+        l = v.xpath("./td")
+        print(len(l))
+    print(ls)
+
 if __name__ == "__main__":
-    main2()
+    main3()
 
