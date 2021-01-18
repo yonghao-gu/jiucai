@@ -54,7 +54,7 @@ def main2():
     #基本信息
     #http://fund.eastmoney.com/000001.html
 
-def main3():
+def fund_base():
     url = "http://fund.eastmoney.com/000001.html"
     headers = {
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:79.0) Gecko/20100101 Firefox/79.0",
@@ -65,15 +65,48 @@ def main3():
         print("result false")
         return
     result.encoding ="utf-8"
-    text = result.text
-    tree = etree.HTML(text)
-    ls = tree.xpath('//div[@class="bd"]')[2].xpath("./ul//tr")[1:]
+    tree = etree.HTML(result.text)
+    ls = tree.xpath('//div[@id="quotationItem_DataTable"]//div[@class="bd"]/ul/li')
+    #股票信息
+    stock = ls[0]
+    #print(etree.tostring(stock_list[0], encoding="unicode", method = "html"))
+    #前十占比
+    top_stock_ratio = float(stock.xpath('.//p[@class="sum"]/span[@class="sum-num"]/text()')[0].replace("%",""))
+    #持仓信息
+    top_stock = {}
+    stock_list = stock.xpath(".//tr")
+    for v in stock_list:
+        data = v.xpath("./td")
+        if len(data) == 0 :
+            continue
+        name = data[0].xpath("./a/@title")[0]
+        ratio = float(data[1].text.replace("%",""))
+        top_stock[name] = ratio
 
-    for v in ls:
-        l = v.xpath("./td")
-        print(len(l))
-    print(ls)
+    #债券信息
+    bond = ls[1]
+    top_bond_ratio  = float(bond.xpath('.//p[@class="sum"]/span[@class="sum-num"]/text()')[0].replace("%",""))
+    
+    bond_list = bond.xpath(".//tr")
+    top_bond = {}
+    for v in bond_list:
+        data = v.xpath("./td")
+        if len(data) == 0 :
+            continue
+        name = data[0].text
+        ratio = float(data[1].text.replace("%",""))
+        top_bond[name] = ratio
+    result = {
+        "top_stock":top_stock,
+        "top_stock_ratio":top_stock_ratio,
+        "top_bond":top_bond,
+        "top_bond_ratio":top_bond_ratio,
+    }
+    return result
+
+
+    
 
 if __name__ == "__main__":
-    main3()
+    print(fund_base())
 
