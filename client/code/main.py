@@ -4,8 +4,10 @@ import sys
 import os
 
 
-libpath = os.path.abspath("../../lib")
+libpath = os.path.abspath("./lib")
 sys.path.append(libpath)
+
+import spiker_api
 
 
 from PyQt5 import QtWidgets, QtGui,QtCore
