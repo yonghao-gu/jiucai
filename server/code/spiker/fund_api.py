@@ -5,87 +5,17 @@ import json
 import re
 from lxml import etree
 
-import fund_api
-import demjson
-import time
-import json
-import ast
 
 
-def main():
-    url = "http://fund.eastmoney.com/js/fundcode_search.js"
+
+#获取页面基本信息
+def fund_base(id):
+    url = "http://fund.eastmoney.com/%s.html"%(str(id))
     headers = {
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:79.0) Gecko/20100101 Firefox/79.0",
     }
     result = requests.get(url = url, headers = headers)
-    if result.status_code != 200 :
-        print("result false")
-        return
-    text = result.text
-    #content = result.content.encode("utf-8")
-    #print(result.content)
-
-    #x = text[text.find("var r = "):]
-    r = re.match("var r = (.*)",text)
-    js_code = r.groups()[0]
-    # js_data = json.loads(js_text)
-    global_data={"data":None}
-    code = '''
-global data
-data = %s
-'''%(js_code)
-    result = exec(code, global_data)
-    print("data:",type(global_data["data"]))
-
-#literal_eval 不能处理非js对象的值，但demjson效率太慢，所以采用异常机制让denjson处理非js对象
-def js2py_val(val):
-    try:
-        val = ast.literal_eval(val) 
-    except BaseException as error:
-        val = demjson.decode(val)
-    return val
-
-def main2():
-    #获取基金公司信息
-    url = "http://fund.eastmoney.com/pingzhongdata/000001.js"
-    headers = {
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:79.0) Gecko/20100101 Firefox/79.0",
-    }
-    result = requests.get(url = url, headers = headers)
-    if result.status_code != 200 :
-        print("result false")
-        return
-    text = result.text
-    #获取所有值
-    r = re.findall(r"var(.*?)=(.*?);",text)
-    env = {}
-    t1 = time.time()
-    for ls in r:
-        key = ls[0].replace(" ","")
-        val = ls[1].replace(" ","")
-        val = js2py_val(val)
-        env[key] = val
-    print("len:%d - men:%dKB"%(len(env),len(text)/1024))
-
-    print("use time:", time.time() - t1)
-    #获取持仓股票信息
-    #基本信息
-    #http://fund.eastmoney.com/000001.html
-
-
-
-
-
-def fund_base():
-    url = "http://fund.eastmoney.com/217011.html"
-    headers = {
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:79.0) Gecko/20100101 Firefox/79.0",
-    }
-    result = requests.get(url = url, headers = headers)
-
-    if result.status_code != 200 :
-        print("result false")
-        return
+    assert result.status_code == 200, "网页获取失败:%s"%(url)
     result.encoding ="utf-8"
     tree = etree.HTML(result.text)
     ls = tree.xpath('//div[@id="quotationItem_DataTable"]//div[@class="bd"]/ul/li')
@@ -95,8 +25,6 @@ def fund_base():
     #前十占比
     top_stock_ratio = 0
     top_stock_date = ""
-
-
     #持仓信息
     top_stock = {}
     stock_list = stock.xpath(".//tr")
@@ -147,10 +75,3 @@ def fund_base():
         "bond_date":top_bond_date,
     }
     return result
-
-
-    
-
-if __name__ == "__main__":
-    main2()
-
