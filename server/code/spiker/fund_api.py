@@ -21,29 +21,31 @@ def fund_base(id):
     ############    解析基础信息    ##############
     ls = tree.xpath('//div[@class="infoOfFund"]//tr')
     fund_type = "暂无" #基金类型
-    fund_scale = "0" #基金规模
+    fund_scale = 0 #基金规模
+    fund_manager = "无"
     if len(ls) > 0:
         info = ls[0]
         fund_type = info.xpath('./td[1]/a/text()')[0]
         text = info.xpath('./td[2]/text()')[0]
-        print(type(text),text)
-        r = re.match(r".*?([\d}\.]*?)\D.*",text)
-        print(r.groups())
+        r = re.match(r'.*?([\d|/.]+).*',text)
+        if r :
+            fund_scale = float(r.groups()[0])
         fund_manager = info.xpath('./td[3]/a/text()')[0]
-        print(fund_type, text, fund_manager)
 
     ############    解析仓位    ##############
 
     ls = tree.xpath('//div[@id="quotationItem_DataTable"]//div[@class="bd"]/ul/li')
     #股票信息
-    stock = ls[0]
     #print(etree.tostring(stock_list[0], encoding="unicode", method = "html"))
     #前十占比
     top_stock_ratio = 0
     top_stock_date = ""
     #持仓信息
     top_stock = {}
-    stock_list = stock.xpath(".//tr")
+    stock_list = []
+    if  len(ls) > 0:
+        stock = ls[0]
+        stock_list = stock.xpath(".//tr")
     for v in stock_list:
         data = v.xpath("./td")
         if len(data) == 0 :
@@ -60,11 +62,13 @@ def fund_base(id):
         top_stock_date = r.groups()[0]
 
     #债券信息
-    bond = ls[1]
-    bond_list = bond.xpath(".//tr")
+    bond_list = []
     top_bond = {}
     top_bond_ratio = 0
     top_bond_date = ""
+    if len(ls) > 1:
+        bond = ls[1]
+        bond_list = bond.xpath(".//tr")
     for v in bond_list:
         data = v.xpath("./td")
         if len(data) == 0 :
@@ -83,6 +87,9 @@ def fund_base(id):
 
 
     result = {
+        "type":fund_type,
+        "scale":fund_scale,
+        "manager":fund_manager,
         "stock":top_stock,
         "stock_ratio":top_stock_ratio,
         "stock_date":top_stock_date,
@@ -123,6 +130,5 @@ def fund_data(code):
         },
     }
     return result
-
 
 

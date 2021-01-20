@@ -47,10 +47,16 @@ data = %s
     print("data:",type(global_data["data"]))
 
 
+def test():
+    text = "：49.94亿元（2020-09-30）"
+    r = re.match(".*?([\d|/.]+).*",text)
+    print(r.groups())
+
 
 
 if __name__ == "__main__":
-    test = False
+    #est()
+    test = True
     ls = ["000001", "006482","213917", "002937","010270"]
     f = fund_api.fund_data
     f = fund_api.fund_base
