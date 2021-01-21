@@ -34,6 +34,10 @@ class CMongodbManager(object):
         return self.DB()[collaction]
 
 
+
+
+
+
 # if __name__ == "__main__":
 #     obj = CMongodbManager("_game", "192.168.6.108", "27017")
 #     col = obj.Collection("role")

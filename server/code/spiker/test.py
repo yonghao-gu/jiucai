@@ -31,13 +31,10 @@ def main():
         print("result false")
         return
     text = result.text
-    #content = result.content.encode("utf-8")
-    #print(result.content)
 
-    #x = text[text.find("var r = "):]
     r = re.match("var r = (.*)",text)
     js_code = r.groups()[0]
-    # js_data = json.loads(js_text)
+
     global_data={"data":None}
     code = '''
 global data
@@ -59,10 +56,10 @@ if __name__ == "__main__":
     test = True
     ls = ["000001", "006482","213917", "002937","010270"]
     f = fund_api.fund_data
-    f = fund_api.fund_base
+    #f = fund_api.fund_base
     if test :
         for i in ls:
-            print(f(i))
+            f(i)
     else:
-        print(f("000001"))
+        f("000001")
 

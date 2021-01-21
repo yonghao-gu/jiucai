@@ -9,7 +9,7 @@ import json
 import re
 import time
 
-
+import mongo_api
 
 
 #获取基金基本信息
@@ -100,6 +100,48 @@ def fund_base(id):
     return result
 
 
+def _compress_networth(ls):
+    result_ls = []
+    for d in ls:
+        result_ls.append([d["x"],d["y"], d.get("equityReturn", "0"), d.get("unitMoney", "")])
+    return result_ls
+
+
+def _compress_Scale(data):
+    if not "categories" in data:
+        return []
+    categories = data["categories"]
+    series = data["series"]
+    result = []
+    for i in range(len(categories)):
+        d = series[i]
+        result.append([categories[i], d["y"], d["mom"]])
+    return result
+
+def _compress_assetAllocation(data):
+    result = {}
+    result["categories"] = data.get("categories", [])
+    series = {}
+    for d in data.get("series", []):
+        series[d["name"]] = d["data"]
+    result["series"] = series
+    return result
+
+
+def _compress_manager(data):
+    result = []
+    for cur_manager in data:
+        info = {
+            "id" :  cur_manager.get("id",""),
+            "name": cur_manager.get("name", "无"),
+            "workTime": cur_manager.get("workTime",""),
+            "fundSize":cur_manager.get("fundSize", "0")
+        }
+        result.append(info)
+    return result
+
+
+
 #获取基金公司具体信息
 def fund_data(code):
     url = "http://fund.eastmoney.com/pingzhongdata/%s.js"%code
@@ -116,6 +158,9 @@ def fund_data(code):
         val = js2py_val(val)
         env[key] = val
     assert env["fS_code"] == code, "code is different"
+    Data_grandTotal = env.get("Data_grandTotal", [])
+    if len(Data_grandTotal) > 0:
+        Data_grandTotal = Data_grandTotal[0].get("data", [])
     result = {
         "code" : env["fS_code"], #基金代码\
         "yield": { #收益率 近3年,近1年，今年来,近6个月，
@@ -126,9 +171,29 @@ def fund_data(code):
         },
         "name": env["fS_name"], #名字
         "total":{ #具体数据
-            "scale":env["Data_fluctuationScale"], #基金规模
+            "scale":_compress_Scale(env.get("Data_fluctuationScale",{})), #基金规模
+            "net_worth":_compress_networth(env.get("Data_netWorthTrend",[])), #净值走势
+            "newworth_total":Data_grandTotal, #累计净值
+            "asset_allocation":_compress_assetAllocation(env.get("Data_assetAllocation", {})), #资产规模
         },
+        "manger":_compress_manager(env.get("Data_currentFundManager", [])),
     }
     return result
+
+
+
+
+
+
+
+################################# 数据库对象 ########################
+
+
+class CFundDB(CMongodbManager):
+    def __init__(self, db_name, addr, port, user = None, password = None):
+        pass
+
+
+
 
 
