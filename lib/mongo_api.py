@@ -10,7 +10,6 @@ class CMongodbManager(object):
             "user" : user,
             "password" : password,
         }
-        print(self.m_conf)
         self.m_name = db_name
         self.m_dbobj = None
     
@@ -21,7 +20,6 @@ class CMongodbManager(object):
             url = "mongodb://%s:%s/%s"%(self.m_conf["addr"], str(self.m_conf["port"]), self.m_name)
         else:
             url = "mongodb://%s:%s@%s:%s/%s"%(self.m_conf["user"], self.m_conf["password"], self.m_conf["addr"], str(self.m_conf["port"]), self.m_name)
-        print(url)
         self.m_dbobj = pymongo.MongoClient(url)
 
         return self.m_dbobj

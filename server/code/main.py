@@ -6,9 +6,13 @@ sys.path.append(libpath)
 
 from defines import *
 
+import time
+
 import globals
 import mongo_api
 import config_api
+import spiker.fund_api as fund_api
+
 
 def init_config():
     file = CONFIG_FILE
@@ -25,11 +29,31 @@ def init_db():
     globals.set_obj("dbobj", obj)
 
 
+def init_db_index():
+    pass
+
+def test():
+    test = True
+    ls = ["000001", "006482","213917", "002937","010270"]
+    f = fund_api.spiker_fund_and_save
+    if test :
+        for i in ls:
+            f(i)
+    else:
+        f("000001")
+
 def main():
+    #读取配置
     init_config()
+    #初始化db
     init_db()
-    # obj = mongo_api.CMongodbManager("_game", "192.168.6.108", "27017")
-    # globals.set_obj("gamedb", obj)
+    #建立索引
+    init_db_index()
+    t = time.time()
+    test()
+    print("user:",time.time()- t)
+
+  
 
 
 

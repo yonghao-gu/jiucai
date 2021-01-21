@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
+from defines import COLLECTION
 
 from spiker_api import str2number, js2py_val, get_url
-
 from lxml import etree
+
 
 import requests
 import json
@@ -10,7 +11,7 @@ import re
 import time
 
 import mongo_api
-
+import globals
 
 #获取基金基本信息
 def fund_base(id):
@@ -181,19 +182,26 @@ def fund_data(code):
     return result
 
 
+#爬取基金所有信息
+def spiker_fund(code):
+    data = {
+        "code": code,
+        "base" : fund_base(code),
+        "data" : fund_data(code)
+    }
+    return data
 
-
-
+def spiker_fund_and_save(code):
+    data = spiker_fund(code)
+    save_fund(code, data)
 
 
 ################################# 数据库对象 ########################
 
-
-class CFundDB(CMongodbManager):
-    def __init__(self, db_name, addr, port, user = None, password = None):
-        pass
-
-
+def save_fund(code, data):
+    dbobj = globals.get_obj("dbobj")
+    col = dbobj.Collection(COLLECTION["fund"])
+    col.update({"code":code}, data, upsert = True )
 
 
 
