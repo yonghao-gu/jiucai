@@ -1,12 +1,9 @@
 # -*- coding: utf-8 -*-
-import sys
 
-import json
-import time
-def __log(*args):
+def __default_log(*args):
     print("maio:",args)
 
-def paramter(log = None):
+def check_use_time(time_limit, log):
     if not log:
         log = print
     def default_decorator(func):
@@ -18,10 +15,5 @@ def paramter(log = None):
         return wrappend_func
     return default_decorator
 
-@paramter()
-def main(a,b):
-    print("hello",a,b)
 
-if __name__ == "__main__":
-    
-    main(33,444)
+

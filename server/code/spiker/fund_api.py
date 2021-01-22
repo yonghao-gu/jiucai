@@ -203,5 +203,11 @@ def save_fund(code, data):
     col = dbobj.Collection(COLLECTION["fund"])
     col.update({"code":code}, data, upsert = True )
 
+def load_fund(code):
+    dbobj = globals.get_obj("dbobj")
+    col = dbobj.Collection(COLLECTION["fund"])
+    ret = col.find_one({"code": code}, {"_id":0})
+    return ret
+
 
 

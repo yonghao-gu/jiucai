@@ -1,9 +1,15 @@
 {
     "db": {
-        "addr": "47.107.152.146", 
-        "port": "8883", 
-        "user": "jiucai", 
-        "password": "a82993344"
+        "addr": "", 
+        "port": "", 
+        "user": "", 
+        "password": ""
+    },
+    "mail":{
+        "user":"",
+        "password":"这里要填的可能是授权码",
+        "host":"smtp.163.com",
+        "to":[""]
     }
 }
 

@@ -7,3 +7,6 @@ server:
 demjson
 lxml
 pymongo
+pandas
+Matplotlib
+

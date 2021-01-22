@@ -32,8 +32,10 @@ class CMongodbManager(object):
         return self.DB()[collaction]
 
 
-
-
+    def CreateIndex(self, collaction, key):
+        col = self.Collection(collaction)
+        ret = col.create_index([(key, pymongo.ASCENDING)], unique=True)
+        return ret
 
 
 # if __name__ == "__main__":

@@ -21,13 +21,13 @@ def add_message(level, str):
 def color(level, str):
     return '''<font size="5" color="%s">%s</fornt>'''%(DEF_LEVEL[level], str)
 
+
 def log_obj():
-    return globals.get_obj("ViewLog")
+    return globals.get_obj("logger")
 
 def write_log(level, *args):
     ls = [ str(i) for i in args]
     s = " ".join(ls)
-    #log_obj().println(color(level, s))
     obj = ClineObj(s, level)
     log_obj().println(obj)
 
@@ -51,7 +51,9 @@ class ClineObj(object):
     def __str__(self):
         return self.text()
     
-
+class CFileLogger(object):
+    def __init__(self, file):
+        pass
 
 
 def Log(*args):
