@@ -9,4 +9,4 @@ lxml
 pymongo
 pandas
 Matplotlib
-
+requests

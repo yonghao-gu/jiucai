@@ -107,7 +107,7 @@ class CMailBox(object):
         self.m_receive = []
     
     def Login(self):
-        smtpObj = smtplib.SMTP() 
+        smtpObj = smtplib.SMTP(timeout = 60) 
         smtpObj.connect(self.m_host,25)
         smtpObj.login(self.m_user,self.m_pwd)
         return smtpObj
