@@ -59,8 +59,7 @@ def main():
 
     #添加任务
     myfund.init_fund_task()
-
-
+    
     #开始执行任务
     taskobj = global_obj.get_obj("task_timer")
     taskobj.RunForever()

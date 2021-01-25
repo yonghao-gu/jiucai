@@ -88,15 +88,15 @@ def fund_base(id):
 
 
     result = {
-        "type":fund_type,
-        "scale":fund_scale,
-        "manager":fund_manager,
-        "stock":top_stock,
-        "stock_ratio":top_stock_ratio,
-        "stock_date":top_stock_date,
-        "bond":top_bond,
-        "bond_ratio":top_bond_ratio,
-        "bond_date":top_bond_date,
+        "type":fund_type, #类型
+        "scale":fund_scale, #规模
+        "manager":fund_manager, #基金经理
+        "stock":top_stock, #股票仓位
+        "stock_ratio":top_stock_ratio, #股票占比
+        "stock_date":top_stock_date, #股票更新日期
+        "bond":top_bond, #债券
+        "bond_ratio":top_bond_ratio, #债券占比
+        "bond_date":top_bond_date, #债券日期
     }
     return result
 
@@ -184,10 +184,14 @@ def fund_data(code):
 
 #爬取基金所有信息
 def spiker_fund(code):
+    base = fund_base(code)
+    t = fund_data(code)
     data = {
         "code": code,
-        "base" : fund_base(code),
-        "data" : fund_data(code)
+        "base" : base,
+        "data" : t,
+        "name" : t["name"]
+
     }
     return data
 
@@ -201,12 +205,12 @@ def spiker_fund_and_save(code):
 
 def save_fund(code, data):
     dbobj = global_obj.get_obj("dbobj")
-    col = dbobj.Collection(COLLECTION["fund"])
+    col = dbobj.Collection(COLLECTION["fund"][0])
     col.update({"code":code}, data, upsert = True )
 
 def load_fund(code):
     dbobj = global_obj.get_obj("dbobj")
-    col = dbobj.Collection(COLLECTION["fund"])
+    col = dbobj.Collection(COLLECTION["fund"][0])
     ret = col.find_one({"code": code}, {"_id":0})
     return ret
 

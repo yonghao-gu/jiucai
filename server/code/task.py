@@ -2,7 +2,7 @@
 import sys
 import os
 import time
-
+import logging
 # libpath = os.path.abspath("./lib")
 # sys.path.append(libpath)
 
@@ -37,14 +37,13 @@ class CTaskTimer(object):
                 continue
             taskobj.Run()
             if taskobj.IsOver():
-                print("task over", str(taskobj))
+                log.Error("task over", taskobj)
                 rm_task.append(taskobj)
 
         for taskobj in rm_task:
             self.m_task.remove(taskobj)
         
     def __CheckAbort(self):
-        print("check stop", self.m_abort)
         if not self.m_abort :
             return False
         if os.path.exists(self.m_abort):
@@ -186,7 +185,8 @@ class CTask(object):
             self.m_func(self, *self.m_args)
         except BaseException as error:
             self.m_status = CTask.__Over
-            print("run task fail",str(self),error)
+            logging.exception(error)
+            log.Error("run task fail",str(self))
         else:
             if self.IsRunOnce():
                 self.m_status = CTask.__Over

@@ -50,10 +50,10 @@ class CMailMessage(object):
             smtpObj.sendmail(self.m_sender, self.m_receive, message.as_string())
             smtpObj.quit()
         except smtplib.SMTPException as e:
-            print("send mail false", e)
+            log.Error("send mail false", e)
             return False
         except BaseException as e:
-            print("sned mail false by other reason",e)
+            log.Error("sned mail false by other reason",e)
             return False
         return True
 
