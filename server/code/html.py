@@ -63,19 +63,39 @@ class CHtml(object):
             fp.write(self.GetHtml())
 
 
+    def Font(self,s, color = None, size = None):
+        return html_font(s,color, size)
+
+def html_font(s, color = None, size = None):
+    attr = ""
+    if color :
+        attr+=' color="%s"'%color
+    if size:
+        attr+=' size="%s"'%(size)
+    return "<font %s>"%(attr) + s + "</font>"
+    return s
+
+
 if __name__ == "__main__":
     ls = []
-    for i in range(10):
-        data= {
-            "key":i,
-            "val": "love*%s"%(i),
-            "TapTap":"OF",
-        }
-        ls.append(data)
-
+    data1= {
+        "a":100,
+        "b":300,
+        "c":500,
+        "d":"ok",
+    }
+    data2 = {
+        "a":100,
+        "b":300,
+        "c":500,
+        "d":"ok",
+    }
     htmobj = CHtml("测试")
-    htmobj.AddDict2Table(ls)
-    htmobj.save_html("./test.html")
+    for key in data1.keys():
+        ls.append([key, htmobj.Font(str(data1[key]), "red"), data2[key]])
+    
+    htmobj.AddTable(ls,head = ["Key","data1", "data2"])
+    htmobj.SaveHtml("./test.html")
 
 
 

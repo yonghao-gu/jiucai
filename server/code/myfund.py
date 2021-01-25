@@ -10,8 +10,9 @@ import log
 import spiker.fund_api as fund_api
 import html
 import mail_box
+import tools
 
-
+@tools.check_use_time(0.5, tools.global_log)
 def check_fund_status(taskobj):
     config = global_obj.get_obj("config")
     fund_list = config.get("fund_list", [])
@@ -38,7 +39,7 @@ def check_fund_status(taskobj):
         for v in ls:
             line = "基金：%s(%s) 变化"%(v["name"],v["code"])
             htmobj.AddLine(line)
-            htmobj.AddDict2Table(v["data"])
+            htmobj.AddTable(v["data"], v["head"])
         html_text = htmobj.GetHtml()
         mailobj = global_obj.get_obj("mail")
         message  = mailobj.HtmlMailMessage()
@@ -46,14 +47,28 @@ def check_fund_status(taskobj):
             log.Info("send jiucai mail done")
 
 
+def set_color(new_val,old_val):
+    if not tools.is_float(new_val) or not tools.is_float(old_val):
+        return new_val
 
+    if float(new_val) >= float(old_val):
+        return html.html_font(str(new_val), "red")
+    else:
+        return html.html_font(str(new_val), "green")
 
-def key_copy(tbl, keys):
-    data = {}
+def combine_dict(new, old, keys, hookfuns = None):
+    ls = []
     for key in keys:
-        if key in tbl:
-            data[key] = tbl[key]
-    return data
+        if hookfuns and hookfuns[key]:
+            n = hookfuns[key](key, "")
+            o = hookfuns[key](key, "")
+        else:
+            n = new.get(key, "")
+            o = old.get(key, "")
+        n = set_color(n, o)
+        ls.append([key, o, n])
+    return ls
+
 
 def compare_fund(old,new):
     base_old = old["base"]
@@ -68,10 +83,11 @@ def compare_fund(old,new):
         keys_list.extend(["scale"])
     if len(keys_list) == 1:
         return
-    ls = []
-    ls.extend([key_copy(base_old, keys_list), key_copy(base_new, keys_list)])
+    ls = combine_dict(base_new, base_new, keys_list)
+    head = ["变量","旧值","新值"]
     result = {
         "data":ls,
+        "head": head,
         "code":new["code"],
         "name":new["name"]
     }
