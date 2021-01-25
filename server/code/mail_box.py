@@ -9,9 +9,9 @@ from email.mime.image import MIMEImage
 
 import copy
 import types
-import globals
+import global_obj
+import log
 
-log = print
 
 
 
@@ -132,6 +132,15 @@ class CMailBox(object):
 
 
 
+def init_mail():
+    config = global_obj.get_obj("config")
+    mail_data = config["mail"]
+    obj = CMailBox(mail_data["user"], mail_data["password"], mail_data["host"])
+    obj.SetSender(mail_data["user"])
+    for name in mail_data["to"]:
+        obj.SetReceive(name)
+    global_obj.set_obj("mail", obj)
+
 
 
 def test():
@@ -149,7 +158,7 @@ def test():
     
     imgs = {"image1":"./test.jpg", "image2":"123445.png"}
 
-    mailobj = globals.get_obj("mail")
+    mailobj = global_obj.get_obj("mail")
 
     message = mailobj.HtmlMailMessage()
     if message.SendMessage("这是标题", boby, imgs = imgs):

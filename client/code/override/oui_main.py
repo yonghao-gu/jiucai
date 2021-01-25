@@ -9,7 +9,7 @@ from view import Ui_log_view
 from view import Ui_MainWindow
 from components import CViewMenu, CViewLog,CViewMenuBar,CViewTest
 
-import globals
+import global_obj
 import log
 
 class Oui_MainWindow(QtWidgets.QMainWindow):
@@ -69,7 +69,7 @@ class Oui_MainWindow(QtWidgets.QMainWindow):
 
     def init_log_view(self):
         self.init_log_ui = CViewLog(self.centralwidget, self)
-        globals.set_obj("ViewLog", self.init_log_ui)
+        global_obj.set_obj("ViewLog", self.init_log_ui)
 
     def init_test_view(self):
         self.init_test_ui = CViewTest(self.centralwidget, self)

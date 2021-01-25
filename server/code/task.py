@@ -6,23 +6,29 @@ import time
 # libpath = os.path.abspath("./lib")
 # sys.path.append(libpath)
 
-
+import global_obj
 
 import time_api
+import log
 
 class CTaskTimer(object):
     __sleep = 5
 
-    def __init__(self):
+    def __init__(self, abort = None):
         self.m_task = []
+        self.m_abort = abort
     
     def AddTask(self, taskobj):
+        log.Sys("AddTask", taskobj)
         self.m_task.append(taskobj)
     
     def RunForever(self):
         while(True):
             time.sleep(CTaskTimer.__sleep)
             self.RunTask()
+            if self.__CheckAbort():
+                break
+        log.Sys("TaskTimer is stop")
     
     def RunTask(self):
         rm_task = []
@@ -36,6 +42,15 @@ class CTaskTimer(object):
 
         for taskobj in rm_task:
             self.m_task.remove(taskobj)
+        
+    def __CheckAbort(self):
+        print("check stop", self.m_abort)
+        if not self.m_abort :
+            return False
+        if os.path.exists(self.m_abort):
+            os.remove(self.m_abort)
+            return True
+        return False
         
 
 class CTimeTrigger(object):
@@ -180,21 +195,16 @@ class CTask(object):
     
 
 
-def init_task():
-    def test1(task,a):
-        print("test1:",a)
-    
-    def test2(task,a):
-        print("test2:",a)
 
-    timetaskobj = CTaskTimer()
-    t1obj = CTimeTrigger(CTimeTrigger.TCycle, 10)
-    task1obj = CTask("test", t1obj, test1, args=("hello",), run_type = CTask.TOnce)
-    t2obj = CTimeTrigger(CTimeTrigger.TCycle, 15)
-    task2obj = CTask("test2", t2obj, test2, args=("lovelove",) ,run_type = CTask.TForever)
-    timetaskobj.AddTask(task1obj)
-    timetaskobj.AddTask(task2obj)
-    timetaskobj.RunForever()
+
+
+def init_task():
+    config = global_obj.get_obj("config")
+    abortfile = None
+    if "abort" in config:
+        abortfile = config["abort"]
+    timetaskobj = CTaskTimer(abortfile)
+    global_obj.set_obj("task_timer", timetaskobj)
 
 if __name__ == "__main__":
     init_task()

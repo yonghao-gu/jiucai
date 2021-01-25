@@ -31,7 +31,7 @@ class CCacheLog(object):
             self.m_file.close()
 
     def writeline(self, lineobj):
-        text = lineobj.messae_text()
+        text = lineobj.message_text()
         self.fwrite(text)
         color_text = str(lineobj)
         self.cache_list.append(color_text)

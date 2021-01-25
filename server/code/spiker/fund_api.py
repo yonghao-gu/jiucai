@@ -11,7 +11,7 @@ import re
 import time
 
 import mongo_api
-import globals
+import global_obj
 
 #获取基金基本信息
 def fund_base(id):
@@ -194,17 +194,18 @@ def spiker_fund(code):
 def spiker_fund_and_save(code):
     data = spiker_fund(code)
     save_fund(code, data)
+    return data
 
 
 ################################# 数据库对象 ########################
 
 def save_fund(code, data):
-    dbobj = globals.get_obj("dbobj")
+    dbobj = global_obj.get_obj("dbobj")
     col = dbobj.Collection(COLLECTION["fund"])
     col.update({"code":code}, data, upsert = True )
 
 def load_fund(code):
-    dbobj = globals.get_obj("dbobj")
+    dbobj = global_obj.get_obj("dbobj")
     col = dbobj.Collection(COLLECTION["fund"])
     ret = col.find_one({"code": code}, {"_id":0})
     return ret

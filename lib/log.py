@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
-
-import globals
+'''
+使用时，必须注册一个logger对象
+'''
+import global_obj
 import time
 
 DEF_LEVEL = {
@@ -23,13 +25,14 @@ def color(level, str):
 
 
 def log_obj():
-    return globals.get_obj("logger")
+    return global_obj.get_obj("logger")
 
 def write_log(level, *args):
     ls = [ str(i) for i in args]
     s = " ".join(ls)
     obj = ClineObj(s, level)
     log_obj().println(obj)
+
 
 class ClineObj(object):
     def __init__(self, s, level):
@@ -39,21 +42,18 @@ class ClineObj(object):
     def color_text(self, s = None):
         return color(self.m_level, s or self.m_text)
     
-    def messae_text(self, s = None):
+    def message_text(self, s = None):
         return add_message(self.m_level, s or self.m_text)
     
     def text(self):
-        return self.color_text(self.messae_text())
+        return self.color_text(self.message_text())
     
     def origin(self):
         return self.m_text
 
     def __str__(self):
         return self.text()
-    
-class CFileLogger(object):
-    def __init__(self, file):
-        pass
+
 
 
 def Log(*args):

@@ -6,7 +6,7 @@ from view import Ui_log_view
 from view import Ui_config_dialog
 from .widget import CInterface
 
-import globals
+import global_obj
 
 class CConfigDialg(QtWidgets.QDialog):
     def __init__(self, parent = None):
@@ -31,7 +31,7 @@ class CConfigDialg(QtWidgets.QDialog):
         self.ui_obj.passwordEdit.setValidator(validator)
 
     def set_label(self):
-        conf_obj = globals.get_obj("Config").get_config()
+        conf_obj = global_obj.get_obj("Config").get_config()
         ui = self.ui_obj
         ui.addrEdit.setText(conf_obj.db_addr)
         ui.portEdit.setText(conf_obj.db_port)
@@ -51,7 +51,7 @@ class CConfigDialg(QtWidgets.QDialog):
     
 
     def OnSaveButtonClicked(self):
-        conf_obj = globals.get_obj("Config")
+        conf_obj = global_obj.get_obj("Config")
         conf = self.get_conf()
         if not conf_obj.set_config(conf):
             QtWidgets.QMessageBox.warning(self, "参数错误", "输入参数有误")

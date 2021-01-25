@@ -14,17 +14,17 @@ from PyQt5 import QtWidgets, QtGui,QtCore
 from override.oui_main import Oui_MainWindow
 from view import Ui_fund_view
 from loadconfig import CLoadConfig
-import globals
+import global_obj
 import log
 import time
 
 def main():
     loadconfig = CLoadConfig()
-    globals.set_obj("Config", loadconfig)
+    global_obj.set_obj("Config", loadconfig)
     app = QtWidgets.QApplication(sys.argv)
-    globals.set_obj("App", app)
+    global_obj.set_obj("App", app)
     mainwindow = Oui_MainWindow()
-    globals.set_obj("MainWindow", mainwindow)
+    global_obj.set_obj("MainWindow", mainwindow)
     #mainW.setWindowIcon(QIcon("./resource/icon.jpg"))
     mainwindow.show()
     

@@ -7,7 +7,7 @@ from .widget import CInterface
 
 
 import math
-import globals
+import global_obj
 _translate = QtCore.QCoreApplication.translate
 
 class CViewMenuBar(QtWidgets.QMenuBar, CInterface):
@@ -59,7 +59,7 @@ class CViewMenuBar(QtWidgets.QMenuBar, CInterface):
 
 
     def onActionTrigged_action_modiy_config(self):
-        config = globals.get_obj("Config")
+        config = global_obj.get_obj("Config")
         config.show_dialog()
 
 
