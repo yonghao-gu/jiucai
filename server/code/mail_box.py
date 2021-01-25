@@ -99,7 +99,7 @@ class CHtmlMailMessage(CMailMessage):
 
 
 class CMailBox(object):
-    def __init__(self, user, password, mailhost, port):
+    def __init__(self, user, password, mailhost):
         self.m_user = user
         self.m_pwd = password
         self.m_host = mailhost
@@ -107,8 +107,8 @@ class CMailBox(object):
         self.m_receive = []
     
     def Login(self):
-        smtpObj = smtplib.SMTP(timeout = 60) 
-        smtpObj.connect(self.m_host,465)
+        smtpObj = smtplib.SMTP_SSL(self.m_host, 465) 
+        #smtpObj.connect(self.m_host,465)
         smtpObj.login(self.m_user,self.m_pwd)
         return smtpObj
 
@@ -135,7 +135,7 @@ class CMailBox(object):
 def init_mail():
     config = global_obj.get_obj("config")
     mail_data = config["mail"]
-    obj = CMailBox(mail_data["user"], mail_data["password"], mail_data["host"], mail_data["port"])
+    obj = CMailBox(mail_data["user"], mail_data["password"], mail_data["host"])
     obj.SetSender(mail_data["user"])
     for name in mail_data["to"]:
         obj.SetReceive(name)
