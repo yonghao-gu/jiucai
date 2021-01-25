@@ -20,8 +20,9 @@ import log
 import myfund
 
 
-def init_config():
-    file = CONFIG_FILE
+def init_config(config_file = None):
+
+    file = config_file if config_file else CONFIG_FILE
     data = config_api.load_config(file)
     #obj = config_api.CConfig(data)
     global_obj.set_obj("config", data)
@@ -43,9 +44,9 @@ def init_db_index():
 
 
 
-def main():
+def main(config_file):
     #读取配置
-    init_config()
+    init_config(config_file)
     #初始化日志
     logger.init_logger()
     #初始化db
@@ -59,7 +60,7 @@ def main():
 
     #添加任务
     myfund.init_fund_task()
-    
+
     #开始执行任务
     taskobj = global_obj.get_obj("task_timer")
     taskobj.RunForever()
@@ -72,4 +73,7 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    conf_file = None
+    if  len(sys.argv) >= 2:
+        conf_file = sys.argv[1]
+    main(conf_file)
