@@ -96,8 +96,8 @@ def compare_fund(old,new):
 
 def init_fund_task():
     task_timer = global_obj.get_obj("task_timer")
-    #time1 = CTimeTrigger(CTimeTrigger.TDay, "11:50:00")
-    time1 = CTimeTrigger(CTimeTrigger.TCycle, 10)
+    time1 = CTimeTrigger(CTimeTrigger.TDay, "23:50:00")
+    #time1 = CTimeTrigger(CTimeTrigger.TCycle, 10)
     taskobj1 = CTask("check_fund", time1, check_fund_status, run_type = CTask.TForever)
     task_timer.AddTask(taskobj1)
 
