@@ -82,14 +82,14 @@ CTimTrigger 定义何时被触发
         elif self.m_trigger_type == CTimeTrigger.TDay:
             ls = ti.split(":")
             assert len(ls) == 3, "args false"
-            ti = ls[0]*3600 + ls[1]*60 + ls[2]
+            ti = int(ls[0])*3600 + int(ls[1])*60 + int(ls[2])
             self.m_args = (ti,)
         elif self.m_trigger_type == CTimeTrigger.TWeek:
             ls = ti.split("-")
             day = ls[0]
             ti = ls[1]
             ls = ti.split(":")
-            ti = ls[0]*3600 + ls[1]*60 + ls[2]
+            ti = int(ls[0])*3600 + int(ls[1])*60 + int(ls[2])
             self.m_args = (day, ti)
         else:
             raise "trigger_type false"
