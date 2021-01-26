@@ -4,6 +4,7 @@ import os
 
 
 from task import CTimeTrigger,CTask
+from spiker.key2word import fund_word
 
 import global_obj
 import log
@@ -51,22 +52,33 @@ def set_color(new_val,old_val):
     if not tools.is_float(new_val) or not tools.is_float(old_val):
         return new_val
 
-    if float(new_val) >= float(old_val):
+    if float(new_val) > float(old_val):
         return html.html_font(str(new_val), "red")
+    elif float(new_val) == float(old_val):
+        return new_val
     else:
         return html.html_font(str(new_val), "green")
+
+def __hook_top(tbl, key, default):
+    if not key in tbl:
+        return default
+    text = ""
+    for name,r in tbl[key].items():
+        text+= html.html_br("%s:%s"%(name,r))
+    return text
+
 
 def combine_dict(new, old, keys, hookfuns = None):
     ls = []
     for key in keys:
-        if hookfuns and hookfuns[key]:
-            n = hookfuns[key](key, "")
-            o = hookfuns[key](key, "")
+        if hookfuns and key in hookfuns:
+            n = hookfuns[key](new, key, "")
+            o = hookfuns[key](old, key, "")
         else:
             n = new.get(key, "")
             o = old.get(key, "")
         n = set_color(n, o)
-        ls.append([key, o, n])
+        ls.append([fund_word(key), o, n])
     return ls
 
 
@@ -74,7 +86,9 @@ def compare_fund(old,new):
     base_old = old["base"]
     base_new = new["base"]
     force = True
-    keys_list = ["fund_manager"]
+    keys_list = ["manager"]
+    if force or base_old["new_worth_update"] != base_new["new_worth_update"]:
+        keys_list.extend(["net_worth", "new_worth_ratio", "new_worth_sum", "new_worth_update"])
     if force or base_old["stock_date"] != base_new["stock_date"]:
         keys_list.extend(["stock", "stock_ratio", "stock_date"])
     if force or base_old["bond_date"] != base_new["bond_date"]:
@@ -83,7 +97,11 @@ def compare_fund(old,new):
         keys_list.extend(["scale"])
     if len(keys_list) == 1:
         return
-    ls = combine_dict(base_new, base_new, keys_list)
+    hook_func = {
+        "stock":__hook_top,
+        "bond": __hook_top,
+    }
+    ls = combine_dict(base_new, base_new, keys_list, hook_func)
     head = ["变量","旧值","新值"]
     result = {
         "data":ls,
@@ -92,6 +110,9 @@ def compare_fund(old,new):
         "name":new["name"]
     }
     return result
+
+
+
 
 
 def init_fund_task():

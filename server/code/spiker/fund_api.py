@@ -19,11 +19,39 @@ def fund_base(id):
     result = get_url(url)
     assert result.status_code == 200, "网页获取失败:%s"%(url)
     tree = etree.HTML(result.text)
+
+    ############  获取净值信息  #############
+    net_worth = "0" #当前净值
+    new_worth_ratio = "0"
+    new_worth_sum = "0" #累计净值
+    new_worth_update = "" #更新时间
+
+    data2_tree = tree.xpath('//div[@class="fundDetail-main"]//dl[@class="dataItem02"]')[0]
+
+    #更新日期
+    ls = data2_tree.xpath("./dt/p/text()")
+    if len(ls) == 1:
+        s = ls[0].replace("(","")
+        new_worth_update = ls[0].replace("(","").replace(")","")
+    
+    #单位净值
+    ls = data2_tree.xpath('.//dd[@class="dataNums"]/span/text()')
+    if len(ls) == 2:
+        net_worth = ls[0]
+        new_worth_ratio = ls[1].replace("%", "")
+
+    #累计单位净值
+    data3_tree = tree.xpath('//div[@class="fundDetail-main"]//dl[@class="dataItem03"]')[0]
+    ls = data3_tree.xpath('.//dd[@class="dataNums"]/span/text()')
+    if len(ls) > 0 and ls[0].find("%") == -1:
+        new_worth_sum = ls[0]
+
     ############    解析基础信息    ##############
     ls = tree.xpath('//div[@class="infoOfFund"]//tr')
     fund_type = "暂无" #基金类型
     fund_scale = 0 #基金规模
     fund_manager = "无"
+
     if len(ls) > 0:
         info = ls[0]
         fund_type = info.xpath('./td[1]/a/text()')[0]
@@ -97,6 +125,10 @@ def fund_base(id):
         "bond":top_bond, #债券
         "bond_ratio":top_bond_ratio, #债券占比
         "bond_date":top_bond_date, #债券日期
+        "net_worth":net_worth, #当前净值
+        "new_worth_ratio":new_worth_ratio, #涨跌
+        "new_worth_sum":new_worth_sum, #累计净值
+        "new_worth_update":new_worth_update, #更新日期
     }
     return result
 
@@ -215,4 +247,12 @@ def load_fund(code):
     return ret
 
 
+
+
+
+
+def test_code():
+    codelist = ["270002", "217011", "003474"]
+    for code in codelist:
+        print(fund_base(code))
 

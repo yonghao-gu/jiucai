@@ -75,6 +75,8 @@ def html_font(s, color = None, size = None):
     return "<font %s>"%(attr) + s + "</font>"
     return s
 
+def html_br(s):
+    return s+"<br>"
 
 if __name__ == "__main__":
     ls = []
