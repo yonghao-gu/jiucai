@@ -26,6 +26,7 @@ class CFileLog(object):
             return
         try:
             self.m_fp.write(s)
+            self.m_fp.flush()
         except IOError as error:
             print("write file false", error)
             if self.m_fp:
