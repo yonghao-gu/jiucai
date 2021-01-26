@@ -7,4 +7,5 @@ Divide = 150 #目录和功能分界线
 LogLow = 30 #日志窗口占的百分比
 
 
-
+CONFIG_FILE = "./client_config.json"
+DB_NAME = "jiucai"

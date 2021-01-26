@@ -10,13 +10,7 @@ def load_config(file):
     f.close()
     return data
 
-class CConfig(object):
-    def __init__(self, conf):
-        self.m_conf = conf
-    
-    def __getattribute__(self, attr):
-        if attr in self.m_conf:
-            return self.m_conf.get(attr, None)
+
     
 
 

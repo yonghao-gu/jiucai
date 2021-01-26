@@ -31,12 +31,12 @@ class CConfigDialg(QtWidgets.QDialog):
         self.ui_obj.passwordEdit.setValidator(validator)
 
     def set_label(self):
-        conf_obj = global_obj.get_obj("Config").get_config()
+        db_conf = global_obj.get_obj("Config")["db"]
         ui = self.ui_obj
-        ui.addrEdit.setText(conf_obj.db_addr)
-        ui.portEdit.setText(conf_obj.db_port)
-        ui.accountEdit.setText(conf_obj.db_account)
-        ui.passwordEdit.setText(conf_obj.db_password)
+        ui.addrEdit.setText(db_conf["addr"])
+        ui.portEdit.setText(db_conf["port"])
+        ui.accountEdit.setText(db_conf["user"])
+        ui.passwordEdit.setText(db_conf["password"])
         
 
     def get_conf(self):
@@ -51,12 +51,12 @@ class CConfigDialg(QtWidgets.QDialog):
     
 
     def OnSaveButtonClicked(self):
-        conf_obj = global_obj.get_obj("Config")
-        conf = self.get_conf()
-        if not conf_obj.set_config(conf):
-            QtWidgets.QMessageBox.warning(self, "参数错误", "输入参数有误")
-            return
-        QtWidgets.QMessageBox.information(self, "设置成功","成功！")
+        # conf_obj = global_obj.get_obj("Config")
+        # conf = self.get_conf()
+        # if not conf_obj.set_config(conf):
+        #     QtWidgets.QMessageBox.warning(self, "参数错误", "输入参数有误")
+        #     return
+        # QtWidgets.QMessageBox.information(self, "设置成功","成功！")
         self.close()
 
     def OnCancelButtonClicked(self):
