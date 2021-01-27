@@ -25,6 +25,42 @@ WORDS = {
 def fund_word(name):
     return WORDS.get(name, name)
 
+'''
+{'混合型': 382, '债券型': 186, '定开债券': 80,
+ '联接基金': 22, '货币型': 191, '股票指数': 23, 'QDII': 17, 
+'QDII-指数': 11, '股票型': 83, '理财型': 3, '债券指数': 2}
+'''
+
+FUND_TYPE = {
+  1:"混合型",
+  2:"债券型",
+  3:"定开债券",
+  4:"联接基金",
+  5:"货币型",
+  6:"股票指数",
+  7:"QDII",
+  8:"II-指数",
+  9:"股票型",
+  10:"理财型",
+  11:"债券指数"
+
+}
+
+FUND_DESC2TYPE = {
+
+}
+
+def __fund_desc2type():
+    global FUND_DESC2TYPE,FUND_TYPE
+    for k,v in FUND_TYPE.items():
+        FUND_DESC2TYPE[v] = k
+
+
+
+
+
+
+
 
 
 

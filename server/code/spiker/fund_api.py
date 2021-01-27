@@ -24,15 +24,13 @@ def fund_all():
     assert result.status_code == 200, "网页获取失败:%s"%(url)
     tree = etree.HTML(result.text)
     ls = tree.xpath('//div[@id="code_content"]//li/div/a[1]/@href')
-    print(len(ls), ls[0])
-    
     fund_list = []
     for s in ls:
         r = re.match(__parttern, s)
         if r:
             code = r.groups()[0]
             fund_list.append(code)
-    return fund_all()
+    return fund_list
   
 
 
@@ -48,26 +46,28 @@ def fund_base(id):
     new_worth_ratio = "0"
     new_worth_sum = "0" #累计净值
     new_worth_update = "" #更新时间
+    ls = tree.xpath('//div[@class="fundDetail-main"]//dl[@class="dataItem02"]')
+    if len(ls) > 0:
+        data2_tree = ls[0]
 
-    data2_tree = tree.xpath('//div[@class="fundDetail-main"]//dl[@class="dataItem02"]')[0]
-
-    #更新日期
-    ls = data2_tree.xpath("./dt/p/text()")
-    if len(ls) == 1:
-        s = ls[0].replace("(","")
-        new_worth_update = ls[0].replace("(","").replace(")","")
-    
-    #单位净值
-    ls = data2_tree.xpath('.//dd[@class="dataNums"]/span/text()')
-    if len(ls) == 2:
-        net_worth = ls[0]
-        new_worth_ratio = ls[1].replace("%", "")
+        #更新日期
+        ls = data2_tree.xpath("./dt/p/text()")
+        if len(ls) == 1:
+            new_worth_update = ls[0].replace("(","").replace(")","")
+        
+        #单位净值
+        ls = data2_tree.xpath('.//dd[@class="dataNums"]/span/text()')
+        if len(ls) == 2:
+            net_worth = ls[0]
+            new_worth_ratio = ls[1].replace("%", "")
 
     #累计单位净值
-    data3_tree = tree.xpath('//div[@class="fundDetail-main"]//dl[@class="dataItem03"]')[0]
-    ls = data3_tree.xpath('.//dd[@class="dataNums"]/span/text()')
-    if len(ls) > 0 and ls[0].find("%") == -1:
-        new_worth_sum = ls[0]
+    ls = tree.xpath('//div[@class="fundDetail-main"]//dl[@class="dataItem03"]')
+    if len(ls) > 0:
+        data3_tree = ls[0]
+        ls = data3_tree.xpath('.//dd[@class="dataNums"]/span/text()')
+        if len(ls) > 0 and ls[0].find("%") == -1:
+            new_worth_sum = ls[0]
 
     ############    解析基础信息    ##############
     ls = tree.xpath('//div[@class="infoOfFund"]//tr')
@@ -104,7 +104,10 @@ def fund_base(id):
             continue
         if data[0].text.find("暂无数据") != -1 :
             break
-        name = data[0].xpath("./a/@title")[0]
+        ls = data[0].xpath("./a/@title")
+        if len(ls) == 0:
+            continue
+        name = ls[0]
         ratio = float(data[1].text.replace("%",""))
         top_stock[name] = ratio
     if len(top_stock) > 0 :
@@ -132,10 +135,15 @@ def fund_base(id):
         top_bond[name] = ratio
     
     if len(top_bond) > 0:
-        top_bond_ratio  = float(bond.xpath('.//p[@class="sum"]/span[@class="sum-num"]/text()')[0].replace("%",""))
-        date_time = bond.xpath('.//span[@class="end_date"]/text()')[0]
-        r = re.match(".*? (.*)",date_time)
-        top_bond_date = r.groups()[0]
+        ls = bond.xpath('.//p[@class="sum"]/span[@class="sum-num"]/text()')
+        if len(ls) > 0:
+            top_bond_ratio  = float(ls[0].replace("%",""))
+        ls = bond.xpath('.//span[@class="end_date"]/text()')
+        if len(ls) > 0:
+            date_time = ls[0]
+            r = re.match(".*? (.*)",date_time)
+            if r:
+                top_bond_date = r.groups()[0]
 
 
     result = {

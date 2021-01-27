@@ -46,14 +46,15 @@ def init_db_index():
 
 def main(config_file):
 
-    #spiker_10year.test_code()
-    fund_api.test_code()
-    if True:
-        return
     #读取配置
     init_config(config_file)
     #初始化日志
     logger.init_logger()
+
+    # myfund.test_code()
+    # if True:
+    #     return
+
     #初始化db
     init_db()
     #建立索引

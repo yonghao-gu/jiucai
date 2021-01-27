@@ -111,10 +111,30 @@ def compare_fund(old, new):
     }
     return result
 
-
+@tools.check_use_time(0, tools.global_log)
 def update_all_fund():
     fund_list = fund_api.fund_all()
+    print(len(fund_list))
+    i=0
+    fund_hash = {}
+    for code in fund_list:
+        try:
+            data = fund_api.spiker_fund(code)
+        except BaseException as error:
+            print("run false",code, i, error)
+            continue
+        i+=1
+        if i > 200:
+            break
+        if i%10 == 0:
+            print("collection",i)
+        t = data.get("type", "")
+        count = fund_hash.get(t, 0)
+        count+=1
+        fund_hash[t] = count
+    print(fund_hash)
 
+    
 
 def init_fund_task():
     task_timer = global_obj.get_obj("task_timer")
@@ -125,7 +145,11 @@ def init_fund_task():
 
 
 
-
+def test_code():
+    update_all_fund()
+    # code_list = ["000485", "000486", "000369"]
+    # for code in code_list:
+    #     print(fund_api.fund_base(code))
 
 
 
