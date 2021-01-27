@@ -13,6 +13,29 @@ import time
 import mongo_api
 import global_obj
 
+import re
+
+__parttern = re.compile(".*\/(\d+)\.html")
+#获取所有基金列表
+def fund_all():
+    url = "http://fund.eastmoney.com/allfund.html"
+    result = get_url(url)
+    result.encoding = 'gbk'
+    assert result.status_code == 200, "网页获取失败:%s"%(url)
+    tree = etree.HTML(result.text)
+    ls = tree.xpath('//div[@id="code_content"]//li/div/a[1]/@href')
+    print(len(ls), ls[0])
+    
+    fund_list = []
+    for s in ls:
+        r = re.match(__parttern, s)
+        if r:
+            code = r.groups()[0]
+            fund_list.append(code)
+    return fund_all()
+  
+
+
 #获取基金基本信息
 def fund_base(id):
     url = "http://fund.eastmoney.com/%s.html"%(str(id))
@@ -252,7 +275,5 @@ def load_fund(code):
 
 
 def test_code():
-    codelist = ["270002", "217011", "003474"]
-    for code in codelist:
-        print(fund_base(code))
+    fund_all()
 

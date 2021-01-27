@@ -112,7 +112,8 @@ def compare_fund(old, new):
     return result
 
 
-
+def update_all_fund():
+    fund_list = fund_api.fund_all()
 
 
 def init_fund_task():
@@ -121,6 +122,7 @@ def init_fund_task():
     #time1 = CTimeTrigger(CTimeTrigger.TCycle, 10)
     taskobj1 = CTask("check_fund", time1, check_fund_status, run_type = CTask.TForever)
     task_timer.AddTask(taskobj1)
+
 
 
 
