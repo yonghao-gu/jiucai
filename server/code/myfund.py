@@ -82,10 +82,10 @@ def combine_dict(new, old, keys, hookfuns = None):
     return ls
 
 
-def compare_fund(old,new):
+def compare_fund(old, new):
     base_old = old["base"]
     base_new = new["base"]
-    force = True
+    force = False
     keys_list = ["manager"]
     if force or base_old["new_worth_update"] != base_new["new_worth_update"]:
         keys_list.extend(["net_worth", "new_worth_ratio", "new_worth_sum", "new_worth_update"])

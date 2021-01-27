@@ -26,3 +26,14 @@ def get_url(url):
     result = requests.get(url = url, headers = headers)
     result.encoding ="utf-8"
     return result
+
+def get_session_url(url, session = None):
+    headers = {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:79.0) Gecko/20100101 Firefox/79.0",
+    }
+    if not session:
+        session = requests.session()
+    
+    result = session.get(url = url, headers = headers)
+    result.encoding ="utf-8"
+    return result, session
