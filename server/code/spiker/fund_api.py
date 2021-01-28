@@ -251,7 +251,7 @@ def fund_data(code):
 
 
 #爬取基金所有信息
-@tools.check_use_time(3, tools.global_log)
+@tools.check_use_time(3, tools.global_log,"爬虫基金信息超时")
 def spiker_fund(code):
     base = fund_base(code)
     t = fund_data(code)

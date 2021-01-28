@@ -15,7 +15,8 @@ import mail_box
 import tools
 
 
-@tools.check_use_time(0.5, tools.global_log)
+
+@tools.check_use_time(0.5, tools.global_log, "关注基金用时")
 def check_fund_status(taskobj):
     config = global_obj.get_obj("config")
     fund_list = config.get("fund_list", [])
@@ -113,24 +114,52 @@ def compare_fund(old, new):
     }
     return result
 
+__filter_stop_type = set([
+    "混合型","股票指数","股票型"
+])
 
+@tools.check_use_time(0, tools.global_log, "线程爬虫用时")
 def thread_spike_fund(threadobj, *fund_list):
     ok = 0
     err = 0
     i=0
     l = len(fund_list)
+    fund_yeild = {}
+    stock_total = {}
     for code in fund_list:
         i+=1
         if i%50 == 0:
             log.Info("thread_spike_fund",threadobj.getName(),i,l-i)
         try:
             data = fund_api.spiker_fund_and_save(code)
+            base_data = data["base"]
+            if not base_data["type"] in __filter_stop_type:
+                continue
+            if not tools.is_float(base_data["new_worth_ratio"]):
+                continue
+            for k,v in base_data["stock"].items():
+                if not k in stock_total:
+                    stock_total[k] = 0
+                stock_total[k]+=1
+            fund_yeild[code] = {
+                "now": base_data["new_worth_ratio"],
+                "history":data["data"]["yield"],
+                "name": data["name"]
+            }
             ok+=1
         except BaseException as error:
-            log.Error("spiker fund false", code, error)
+            log.Error("spiker fund false", threadobj.getName(), code, error)
             err+=1
             continue
-    return ok,err
+
+    return {
+        "ok":ok,
+        "error":err,
+        "data":{
+            "stock":stock_total,
+            "yeild":fund_yeild,
+        },
+    }
 
 
 def split_args(count,fund_list):
@@ -146,7 +175,7 @@ def split_args(count,fund_list):
         args_list.append(ll)
     return args_list
 
-@tools.check_use_time(0, tools.global_log)
+@tools.check_use_time(0, tools.global_log, "爬取所有基金用時")
 def update_all_fund():
     fund_list = fund_api.fund_all()
     l = len(fund_list)
@@ -154,8 +183,56 @@ def update_all_fund():
     thread_num = 5
     args_list = split_args(thread_num,fund_list)
     result = thread_api.start_args(thread_spike_fund, args_list)
-    Log.Info("update all fund done", result)
- 
+    all_ok = 0
+    all_error = 0
+    stock_total = {}
+    top_fund = []
+    for data in result:
+        all_ok+=data["ok"]
+        all_error+=data["error"]
+        tools.combine_dict(stock_total, data["data"]["stock"])
+        for code, v in data["data"]["yeild"].items():
+            top_fund.append((code, v))
+    
+    top_stock = [ (k, v) for k,v in stock_total.items() ]
+    top_stock = sorted(top_stock, key = lambda k:float(k[1]), reverse = True)
+    top_fund = sorted(top_fund, key = lambda d:float(d[1]["now"]), reverse = True)
+
+    top20stock = top_stock[:20]
+    top20fund = top_fund[:20]
+    tail20fund = list(reversed(top_fund[len(top_fund) - 20:]))
+
+    def make_fund(fund_list):
+        ls = []
+        for v in fund_list:
+            code = v[0]
+            data = v[1]
+            d = data["history"]
+            l = [data["name"], code, data["now"], 
+                d.get("month1",0), d.get("month3", 0), d.get("month6", 0) ,d.get("year1", 0)
+                ]
+            ls.append(l)
+        return ls
+
+
+    htmobj = html.CHtml("韭菜排行:")
+    if len(top20stock) > 0:
+        htmobj.AddLine("基金持仓top20股票")
+        htmobj.AddTable(top20stock, head = ["股票名","基金持有数"])
+
+    head = ["基金名","代码","今日收益", "近1月收益", "近3月收益", "近6月收益", "近1年收益"]
+    if len(top20fund) > 0:
+        htmobj.AddLine("收益top20")
+        htmobj.AddTable(make_fund(top20fund), head = head)
+    if len(tail20fund) > 0:
+        htmobj.AddLine("亏损top20")
+        htmobj.AddTable(make_fund(tail20fund), head = head)
+
+    html_text = htmobj.GetHtml()
+    mailobj = global_obj.get_obj("mail")
+    message  = mailobj.HtmlMailMessage()
+    if message.SendMessage("韭菜排行榜", html_text):
+        log.Info("send jiucai mail done")
 
     
 

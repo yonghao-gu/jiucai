@@ -5,7 +5,7 @@ import log
 def __default_log(*args):
     print("已用时",args)
 
-def check_use_time(time_limit, log):
+def check_use_time(time_limit, log, desc = "流程总用时:"):
     if not log:
         log = print
     def default_decorator(func):
@@ -13,7 +13,7 @@ def check_use_time(time_limit, log):
             fs = time.time()
             ret = func(*args, **kwargs) 
             if time.time() - fs > time_limit:
-                log("流程总用时：%d"%(time.time() - fs))
+                log("%s %d"%(desc, time.time() - fs))
             return ret
         return wrappend_func
     return default_decorator
@@ -28,3 +28,13 @@ def is_float(s):
     except BaseException as e:
         return False
     return True
+
+def combine_dict(dict1, dict2):
+    for k,v in dict2.items():
+        if k in dict1 and type(dict1[k]) == int and type(v) == int:
+            dict1[k]+=v
+        else:
+            if not k in dict1:
+                dict1[k] = v
+
+
