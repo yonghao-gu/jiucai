@@ -9,9 +9,11 @@ from spiker.key2word import fund_word
 import global_obj
 import log
 import spiker.fund_api as fund_api
+import thread_api
 import html
 import mail_box
 import tools
+
 
 @tools.check_use_time(0.5, tools.global_log)
 def check_fund_status(taskobj):
@@ -111,37 +113,62 @@ def compare_fund(old, new):
     }
     return result
 
+
+def thread_spike_fund(threadobj, *fund_list):
+    ok = 0
+    err = 0
+    i=0
+    l = len(fund_list)
+    for code in fund_list:
+        i+=1
+        if i%50 == 0:
+            log.Info("thread_spike_fund",threadobj.getName(),i,l-i)
+        try:
+            data = fund_api.spiker_fund_and_save(code)
+            ok+=1
+        except BaseException as error:
+            log.Error("spiker fund false", code, error)
+            err+=1
+            continue
+    return ok,err
+
+
+def split_args(count,fund_list):
+    args_list = []
+    l = len(fund_list)
+    n = int(l/count) + 1
+    start,end = 0,n
+    for i in range(count):
+        ll = fund_list[start:end]
+        start,end = end,end+n
+        if len(ll) == 0:
+            break
+        args_list.append(ll)
+    return args_list
+
 @tools.check_use_time(0, tools.global_log)
 def update_all_fund():
     fund_list = fund_api.fund_all()
-    print(len(fund_list))
-    i=0
-    fund_hash = {}
-    for code in fund_list:
-        try:
-            data = fund_api.spiker_fund(code)
-        except BaseException as error:
-            print("run false",code, i, error)
-            continue
-        i+=1
-        if i > 200:
-            break
-        if i%10 == 0:
-            print("collection",i)
-        t = data.get("type", "")
-        count = fund_hash.get(t, 0)
-        count+=1
-        fund_hash[t] = count
-    print(fund_hash)
+    l = len(fund_list)
+    log.Info("update_all_fund", l)
+    thread_num = 5
+    args_list = split_args(thread_num,fund_list)
+    result = thread_api.start_args(thread_spike_fund, args_list)
+    Log.Info("update all fund done", result)
+ 
 
     
 
 def init_fund_task():
     task_timer = global_obj.get_obj("task_timer")
-    time1 = CTimeTrigger(CTimeTrigger.TDay, "23:50:00")
+    time1 = CTimeTrigger(CTimeTrigger.TDay, "23:40:00")
     #time1 = CTimeTrigger(CTimeTrigger.TCycle, 10)
     taskobj1 = CTask("check_fund", time1, check_fund_status, run_type = CTask.TForever)
     task_timer.AddTask(taskobj1)
+
+    time2 = CTimeTrigger(CTimeTrigger.TDay, "23:50:00")
+    taskobj2 = CTask("check_fund", time1, update_all_fund, run_type = CTask.TForever)
+    task_timer.AddTask(taskobj2)
 
 
 

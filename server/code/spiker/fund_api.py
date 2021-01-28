@@ -12,8 +12,8 @@ import time
 
 import mongo_api
 import global_obj
+import tools
 
-import re
 
 __parttern = re.compile(".*\/(\d+)\.html")
 #获取所有基金列表
@@ -111,10 +111,15 @@ def fund_base(id):
         ratio = float(data[1].text.replace("%",""))
         top_stock[name] = ratio
     if len(top_stock) > 0 :
-        top_stock_ratio = float(stock.xpath('.//p[@class="sum"]/span[@class="sum-num"]/text()')[0].replace("%",""))
-        date_time = stock.xpath('.//span[@class="end_date"]/text()')[0]
-        r = re.match(".*? (.*)",date_time)
-        top_stock_date = r.groups()[0]
+        ls = stock.xpath('.//p[@class="sum"]/span[@class="sum-num"]/text()')
+        if len(ls) > 0:
+            top_stock_ratio = float(ls[0].replace("%",""))
+        ls = stock.xpath('.//span[@class="end_date"]/text()')
+        if len(ls) > 0:
+            date_time = ls[0]
+            r = re.match(".*? (.*)",date_time)
+            if r:
+                top_stock_date = r.groups()[0]
 
     #债券信息
     bond_list = []
@@ -246,6 +251,7 @@ def fund_data(code):
 
 
 #爬取基金所有信息
+@tools.check_use_time(3, tools.global_log)
 def spiker_fund(code):
     base = fund_base(code)
     t = fund_data(code)

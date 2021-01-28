@@ -51,9 +51,6 @@ def main(config_file):
     #初始化日志
     logger.init_logger()
 
-    # myfund.test_code()
-    # if True:
-    #     return
 
     #初始化db
     init_db()
@@ -61,6 +58,7 @@ def main(config_file):
     init_db_index()
     #初始化邮件对象
     mail_box.init_mail()
+    
     #初始化定时任务
     task.init_task()
 
