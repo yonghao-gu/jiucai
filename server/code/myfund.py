@@ -176,10 +176,10 @@ def split_args(count,fund_list):
     return args_list
 
 @tools.check_use_time(0, tools.global_log, "爬取所有基金用時")
-def update_all_fund():
+def update_all_fund(taskobj):
     fund_list = fund_api.fund_all()
     l = len(fund_list)
-    log.Info("update_all_fund", l)
+    log.Info("update_all_fund", taskobj, l)
     thread_num = 5
     args_list = split_args(thread_num,fund_list)
     result = thread_api.start_args(thread_spike_fund, args_list)
@@ -244,7 +244,7 @@ def init_fund_task():
     task_timer.AddTask(taskobj1)
 
     time2 = CTimeTrigger(CTimeTrigger.TDay, "23:50:00")
-    taskobj2 = CTask("check_fund", time1, update_all_fund, run_type = CTask.TForever)
+    taskobj2 = CTask("update_all", time2, update_all_fund, run_type = CTask.TForever)
     task_timer.AddTask(taskobj2)
 
 
