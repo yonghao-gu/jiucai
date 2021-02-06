@@ -59,8 +59,6 @@ def main(config_file):
     #初始化邮件对象
     mail_box.init_mail()
     
-
-
     #初始化定时任务
     task.init_task()
 

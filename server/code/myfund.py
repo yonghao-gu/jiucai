@@ -15,6 +15,8 @@ import mail_box
 import tools
 
 
+def tofloat(s):
+    return tools.tofloat(s, 4)
 
 @tools.check_use_time(0.5, tools.global_log, "关注基金用时")
 def check_fund_status(taskobj):
@@ -49,15 +51,19 @@ def check_fund_status(taskobj):
         message  = mailobj.HtmlMailMessage()
         if message.SendMessage("韭菜研报", html_text):
             log.Info("send jiucai mail done")
+    else:
+        log.Info("基金信息没有变化")
 
 
 def set_color(new_val,old_val):
     if not tools.is_float(new_val) or not tools.is_float(old_val):
         return new_val
+    nf = tofloat(new_val)
+    of = tofloat(old_val)
 
-    if float(new_val) > float(old_val):
+    if nf > of:
         return html.html_font(str(new_val), "red")
-    elif float(new_val) == float(old_val):
+    elif nf == of:
         return new_val
     else:
         return html.html_font(str(new_val), "green")
@@ -91,7 +97,7 @@ def compare_fund(old, new):
     force = False
     keys_list = ["manager"]
     if force or base_old["new_worth_update"] != base_new["new_worth_update"]:
-        keys_list.extend(["net_worth", "new_worth_ratio", "new_worth_sum", "new_worth_update"])
+        keys_list.extend(["new_worth", "new_worth_ratio", "new_worth_sum", "new_worth_update"])
     if force or base_old["stock_date"] != base_new["stock_date"]:
         keys_list.extend(["stock", "stock_ratio", "stock_date"])
     if force or base_old["bond_date"] != base_new["bond_date"]:
@@ -104,7 +110,7 @@ def compare_fund(old, new):
         "stock":__hook_top,
         "bond": __hook_top,
     }
-    ls = combine_dict(base_new, base_new, keys_list, hook_func)
+    ls = combine_dict(base_new, base_old, keys_list, hook_func)
     head = ["变量","旧值","新值"]
     result = {
         "data":ls,
@@ -195,10 +201,14 @@ def update_all_fund(taskobj):
             top_fund.append((code, v))
     
     top_stock = [ (k, v) for k,v in stock_total.items() ]
-    top_stock = sorted(top_stock, key = lambda k:float(k[1]), reverse = True)
-    top_fund = sorted(top_fund, key = lambda d:float(d[1]["now"]), reverse = True)
+    top_stock = sorted(top_stock, key = lambda k:tofloat(k[1]), reverse = True)
+    top_fund = sorted(top_fund, key = lambda d:tofloat(d[1]["now"]), reverse = True)
 
-    top20stock = top_stock[:20]
+    with open("stock_list.txt", "w") as fp:
+        for v in top_stock:
+            fp.write("%s    %s\n"%(v[0],v[1]))
+
+    top20stock = top_stock[:40]
     top20fund = top_fund[:20]
     tail20fund = list(reversed(top_fund[len(top_fund) - 20:]))
 
@@ -239,7 +249,6 @@ def update_all_fund(taskobj):
 def init_fund_task():
     task_timer = global_obj.get_obj("task_timer")
     time1 = CTimeTrigger(CTimeTrigger.TDay, "23:40:00")
-    #time1 = CTimeTrigger(CTimeTrigger.TCycle, 10)
     taskobj1 = CTask("check_fund", time1, check_fund_status, run_type = CTask.TForever)
     task_timer.AddTask(taskobj1)
 
@@ -250,7 +259,7 @@ def init_fund_task():
 
 
 def test_code():
-    update_all_fund()
+    update_all_fund("no task")
     # code_list = ["000485", "000486", "000369"]
     # for code in code_list:
     #     print(fund_api.fund_base(code))

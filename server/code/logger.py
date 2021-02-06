@@ -37,7 +37,7 @@ class CFileLog(object):
         text = obj.message_text()
         print(text)
         self.write(text+"\n")
-        
+       
 
 def init_logger():
     config = global_obj.get_obj("config")

@@ -15,6 +15,9 @@ import global_obj
 import tools
 
 
+def tofloat(s):
+    return tools.tofloat(s, 10)
+
 __parttern = re.compile(".*\/(\d+)\.html")
 #获取所有基金列表
 def fund_all():
@@ -42,7 +45,7 @@ def fund_base(id):
     tree = etree.HTML(result.text)
 
     ############  获取净值信息  #############
-    net_worth = "0" #当前净值
+    new_worth = "0" #当前净值
     new_worth_ratio = "0"
     new_worth_sum = "0" #累计净值
     new_worth_update = "" #更新时间
@@ -58,7 +61,7 @@ def fund_base(id):
         #单位净值
         ls = data2_tree.xpath('.//dd[@class="dataNums"]/span/text()')
         if len(ls) == 2:
-            net_worth = ls[0]
+            new_worth = ls[0]
             new_worth_ratio = ls[1].replace("%", "")
 
     #累计单位净值
@@ -81,7 +84,7 @@ def fund_base(id):
         text = info.xpath('./td[2]/text()')[0]
         r = re.match(r'.*?([\d|/.]+).*',text)
         if r :
-            fund_scale = float(r.groups()[0])
+            fund_scale = tofloat(r.groups()[0])
         fund_manager = info.xpath('./td[3]/a/text()')[0]
 
     ############    解析仓位    ##############
@@ -108,12 +111,12 @@ def fund_base(id):
         if len(ls) == 0:
             continue
         name = ls[0]
-        ratio = float(data[1].text.replace("%",""))
+        ratio = tofloat(data[1].text.replace("%",""))
         top_stock[name] = ratio
     if len(top_stock) > 0 :
         ls = stock.xpath('.//p[@class="sum"]/span[@class="sum-num"]/text()')
         if len(ls) > 0:
-            top_stock_ratio = float(ls[0].replace("%",""))
+            top_stock_ratio = tofloat(ls[0].replace("%",""))
         ls = stock.xpath('.//span[@class="end_date"]/text()')
         if len(ls) > 0:
             date_time = ls[0]
@@ -136,13 +139,13 @@ def fund_base(id):
         name = data[0].text
         if name.find("暂无数据") != -1:
             break
-        ratio = float(data[1].text.replace("%",""))
+        ratio = tofloat(data[1].text.replace("%",""))
         top_bond[name] = ratio
     
     if len(top_bond) > 0:
         ls = bond.xpath('.//p[@class="sum"]/span[@class="sum-num"]/text()')
         if len(ls) > 0:
-            top_bond_ratio  = float(ls[0].replace("%",""))
+            top_bond_ratio  = tofloat(ls[0].replace("%",""))
         ls = bond.xpath('.//span[@class="end_date"]/text()')
         if len(ls) > 0:
             date_time = ls[0]
@@ -161,7 +164,7 @@ def fund_base(id):
         "bond":top_bond, #债券
         "bond_ratio":top_bond_ratio, #债券占比
         "bond_date":top_bond_date, #债券日期
-        "net_worth":net_worth, #当前净值
+        "new_worth":new_worth, #当前净值
         "new_worth_ratio":new_worth_ratio, #涨跌
         "new_worth_sum":new_worth_sum, #累计净值
         "new_worth_update":new_worth_update, #更新日期
@@ -241,9 +244,9 @@ def fund_data(code):
         "name": env["fS_name"], #名字
         "total":{ #具体数据
             "scale":_compress_Scale(env.get("Data_fluctuationScale",{})), #基金规模
-            "net_worth":_compress_networth(env.get("Data_netWorthTrend",[])), #净值走势
+            "new_worth":_compress_networth(env.get("Data_netWorthTrend",[])), #净值走势
             "newworth_total":Data_grandTotal, #累计净值
-            "asset_allocation":_compress_assetAllocation(env.get("Data_assetAllocation", {})), #资产规模
+            #"asset_allocation":_compress_assetAllocation(env.get("Data_assetAllocation", {})), #资产规模
         },
         "manger":_compress_manager(env.get("Data_currentFundManager", [])),
     }
@@ -271,6 +274,7 @@ def spiker_fund_and_save(code):
 
 
 ################################# 数据库对象 ########################
+
 
 def save_fund(code, data):
     dbobj = global_obj.get_obj("dbobj")

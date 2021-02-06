@@ -15,7 +15,7 @@ WORDS = {
     "bond_date":"债券更新日期",
     "name": "基金",
     "code":"代码",
-    "net_worth":"当前净值",
+    "new_worth":"当前净值",
     "new_worth_ratio":"涨跌",
     "new_worth_sum":"累计净值",
     "new_worth_update":"净值更新",

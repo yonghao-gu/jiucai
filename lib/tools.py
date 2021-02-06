@@ -29,6 +29,14 @@ def is_float(s):
         return False
     return True
 
+def tofloat(s, point = 2):
+    if not is_float(s) :
+        return 0.0
+    fmt = "%%.%df"%(point)
+    return float(fmt%(float(s)))
+
+
+
 def combine_dict(dict1, dict2):
     for k,v in dict2.items():
         if k in dict1 and type(dict1[k]) == int and type(v) == int:
