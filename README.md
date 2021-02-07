@@ -3,12 +3,16 @@
 - server: 爬取数据并运行定时任务发送邮件
 - client: 使用pyqt5制作的界面，用于连上数据库，查看爬取的信息（未完成）
 
+## 运行环境
+1. python3.7
+2. mongodb
+
 ## 依赖库
 1. demjson
 2. lxml
 3. pymongo
 4. requests
-5. pyqt5(客户端)
+5. pyqt5(客户端用的库，不需要安装)
 
 
 ## 启动
