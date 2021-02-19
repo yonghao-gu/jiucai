@@ -204,9 +204,13 @@ def update_all_fund(taskobj):
     top_stock = sorted(top_stock, key = lambda k:tofloat(k[1]), reverse = True)
     top_fund = sorted(top_fund, key = lambda d:tofloat(d[1]["now"]), reverse = True)
 
-    with open("stock_list.txt", "w") as fp:
-        for v in top_stock:
-            fp.write("%s    %s\n"%(v[0],v[1]))
+    def write_stock_list():
+        with open("stock_list.txt", "w") as fp:
+            for v in top_stock:
+                fp.write("%s    %s\n"%(v[0],v[1]))
+
+
+    #write_stock_list()
 
     top20stock = top_stock[:40]
     top20fund = top_fund[:20]
